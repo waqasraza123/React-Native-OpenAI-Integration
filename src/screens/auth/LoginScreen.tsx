@@ -8,7 +8,7 @@ import {
     Alert
 } from 'react-native'
 import { styles } from './LoginScreen.styles'
-import { magic } from '../../lib/magic'
+import { supabase } from '../../lib/supabase'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 
@@ -17,6 +17,7 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
 export default function LoginScreen() {
     const navigation = useNavigation<LoginScreenNavigationProp>()
     const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -24,11 +25,21 @@ export default function LoginScreen() {
         try {
             setLoading(true)
             setError(null)
-            await magic.auth.loginWithEmailOTP({ email })
-            Alert.alert('Success', 'Check your email for the login link.')
-        } catch (err: any) {
-            setError('Login failed. Please try again.')
+
+            const { data, error: loginError } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            })
+
+            if (loginError) {
+                setError(loginError.message)
+                return
+            }
+
+            Alert.alert('Login Successful', 'You are now logged in.')
+        } catch (err) {
             console.error(err)
+            setError('Login failed. Please try again.')
         } finally {
             setLoading(false)
         }
@@ -37,7 +48,7 @@ export default function LoginScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.box}>
-                <Text style={styles.title}>Magic Link Login</Text>
+                <Text style={styles.title}>Login with Email & Password</Text>
 
                 <TextInput
                     style={styles.input}
@@ -48,15 +59,23 @@ export default function LoginScreen() {
                     autoCapitalize="none"
                 />
 
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                />
+
                 <TouchableOpacity
-                    style={[styles.button, (loading || !email) && styles.buttonDisabled]}
+                    style={[styles.button, (loading || !email || !password) && styles.buttonDisabled]}
                     onPress={handleLogin}
-                    disabled={loading || !email}
+                    disabled={loading || !email || !password}
                 >
                     {loading ? (
                         <ActivityIndicator color="#fff" />
                     ) : (
-                        <Text style={styles.buttonText}>Send Magic Link</Text>
+                        <Text style={styles.buttonText}>Login</Text>
                     )}
                 </TouchableOpacity>
 
