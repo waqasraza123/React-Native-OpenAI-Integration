@@ -11,6 +11,7 @@
   "dependencies": {
     "@magic-sdk/react-native-expo": "^30.0.6",
     "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-community/netinfo": "^11.4.1",
     "@tamagui/config": "^1.126.4",
     "@tamagui/core": "^1.126.4",
     "@tamagui/font": "^1.126.4",
@@ -26,6 +27,7 @@
     "react-native-device-info": "^14.0.4",
     "react-native-dotenv": "^3.4.11",
     "react-native-safe-area-context": "^5.4.0",
+    "react-native-webview": "^13.13.5",
     "tamagui": "^1.126.4"
   },
   "devDependencies": {
