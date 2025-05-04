@@ -5,12 +5,17 @@ import {
     TextInput,
     TouchableOpacity,
     ActivityIndicator,
+    Alert
 } from 'react-native'
-import { magic } from '../../lib/magic'
 import { styles } from './LoginScreen.styles'
-import { Alert } from 'react-native'
+import { magic } from '../../lib/magic'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
 
 export default function LoginScreen() {
+    const navigation = useNavigation<LoginScreenNavigationProp>()
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -20,21 +25,13 @@ export default function LoginScreen() {
             setLoading(true)
             setError(null)
             await magic.auth.loginWithEmailOTP({ email })
-            Alert.alert(
-                'Successfully Authenticated',
-                'You can continue using the app.',
-                [{ text: 'OK' }]
-            )
+            Alert.alert('Success', 'Check your email for the login link.')
         } catch (err: any) {
             setError('Login failed. Please try again.')
             console.error(err)
         } finally {
             setLoading(false)
         }
-    }
-
-    const handleEmailChange = (newEmail: string) => {
-        setEmail(newEmail)
     }
 
     return (
@@ -46,7 +43,7 @@ export default function LoginScreen() {
                     style={styles.input}
                     placeholder="you@example.com"
                     value={email}
-                    onChangeText={handleEmailChange}
+                    onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                 />
@@ -61,6 +58,12 @@ export default function LoginScreen() {
                     ) : (
                         <Text style={styles.buttonText}>Send Magic Link</Text>
                     )}
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                    <Text style={{ textAlign: 'center', marginTop: 16, color: '#007bff' }}>
+                        Don't have an account? Sign Up
+                    </Text>
                 </TouchableOpacity>
 
                 {error && <Text style={styles.error}>{error}</Text>}

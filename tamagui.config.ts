@@ -13,6 +13,8 @@ export const config = createTamagui({
         },
         space: {
             '-sm': 8,
+            2: 8,
+            3: 12,
             4: 16,
             true: 8
         },
