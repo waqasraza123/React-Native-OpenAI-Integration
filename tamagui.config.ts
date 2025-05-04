@@ -6,16 +6,20 @@ export const config = createTamagui({
             sm: 8,
             md: 12,
             lg: 20,
+            2: 8,
             4: 16,
             5: 20,
             6: 24,
         },
         space: {
             '-sm': 8,
+            4: 16,
+            true: 8
         },
         radius: {
             none: 0,
             sm: 3,
+            4: 16,
         },
         color: {
             white: '#fff',
@@ -28,6 +32,7 @@ export const config = createTamagui({
             family: 'System',
             size: {
                 true: 16,
+                2: 8,
                 4: 16,
                 5: 20,
                 6: 24,
