@@ -1,8 +1,17 @@
 import React, { useState } from 'react'
-import { Button, Input, Text, YStack, Spinner, XStack, Label } from 'tamagui'
-import { Alert } from 'react-native'
+import {
+    Alert,
+    ScrollView,
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ActivityIndicator,
+    StyleSheet,
+} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { supabase } from '../../lib/supabase'
+import { useNavigation } from '@react-navigation/native'
 
 export default function SignUpScreen() {
     const [name, setName] = useState('')
@@ -12,20 +21,21 @@ export default function SignUpScreen() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [showDatePicker, setShowDatePicker] = useState(false)
+    const navigation = useNavigation<any>()
 
     const handleSignUp = async () => {
         setLoading(true)
         setError(null)
 
-        const { data, error: signUpError } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
             email,
             password,
             options: {
                 data: {
                     name,
-                    dob: dob.toISOString()
-                }
-            }
+                    dob: dob.toISOString(),
+                },
+            },
         })
 
         setLoading(false)
@@ -39,87 +49,128 @@ export default function SignUpScreen() {
     }
 
     return (
-        <XStack
-            flex={1}
-            backgroundColor="$bg"
-            alignItems="center"
-            justifyContent="center"
-            padding="$4"
-        >
-            <YStack
-                width={320}
-                gap="$3"
-                padding="$4"
-                borderRadius="$4"
-                backgroundColor="$color"
-                elevation="$2"
-            >
-                <Text fontSize="$6" fontWeight="700" textAlign="center">
-                    Sign Up
-                </Text>
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.card}>
+                <Text style={styles.title}>Create an Account</Text>
 
-                <YStack gap="$2">
-                    <Label>Name</Label>
-                    <Input value={name} onChangeText={setName} placeholder="Full Name" />
-                </YStack>
+                <TextInput
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="Full Name"
+                    style={styles.input}
+                />
 
-                <YStack gap="$2">
-                    <Label>Email</Label>
-                    <Input
-                        value={email}
-                        onChangeText={setEmail}
-                        placeholder="you@example.com"
-                        autoCapitalize="none"
-                        keyboardType="email-address"
+                <TextInput
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="you@example.com"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    style={styles.input}
+                />
+
+                <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Password"
+                    secureTextEntry
+                    style={styles.input}
+                />
+
+                <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
+                    <Text>{dob.toDateString()}</Text>
+                </TouchableOpacity>
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={dob}
+                        mode="date"
+                        display="default"
+                        onChange={(_, selectedDate) => {
+                            setShowDatePicker(false)
+                            if (selectedDate) setDob(selectedDate)
+                        }}
                     />
-                </YStack>
+                )}
 
-                <YStack gap="$2">
-                    <Label>Password</Label>
-                    <Input
-                        value={password}
-                        onChangeText={setPassword}
-                        placeholder="Password"
-                        secureTextEntry
-                    />
-                </YStack>
-
-                <YStack gap="$2">
-                    <Label>Date of Birth</Label>
-                    <Button
-                        variant="outlined"
-                        onPress={() => setShowDatePicker(true)}
-                    >
-                        {dob.toDateString()}
-                    </Button>
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={dob}
-                            mode="date"
-                            display="default"
-                            onChange={(_, selectedDate) => {
-                                setShowDatePicker(false)
-                                if (selectedDate) setDob(selectedDate)
-                            }}
-                        />
-                    )}
-                </YStack>
-
-                <Button
-                    size="$4"
-                    theme="light"
+                <TouchableOpacity
                     onPress={handleSignUp}
+                    style={styles.submitButton}
                     disabled={loading}
                 >
-                    {loading ? <Spinner size="small" color="$color" /> : 'Register'}
-                </Button>
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.submitButtonText}>Register</Text>
+                    )}
+                </TouchableOpacity>
 
-                {error && (
-                    <Text color="red" textAlign="center">
-                        {error}
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                    <Text style={{ textAlign: 'center', marginTop: 16, color: '#007bff' }}>
+                        Already have an account? Sign In
                     </Text>
-                )}
-            </YStack>
-        </XStack>
+                </TouchableOpacity>
+
+                {error && <Text style={styles.error}>{error}</Text>}
+            </View>
+        </ScrollView>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flexGrow: 1,
+        backgroundColor: '#f2f2f2',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    card: {
+        backgroundColor: '#fff',
+        width: '100%',
+        maxWidth: 380,
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
+    },
+    title: {
+        fontSize: 22,
+        marginBottom: 20,
+        textAlign: 'center',
+        fontWeight: '600',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 6,
+        padding: 10,
+        marginBottom: 16,
+    },
+    dateButton: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 6,
+        padding: 12,
+        marginBottom: 16,
+        backgroundColor: '#f9f9f9',
+    },
+    submitButton: {
+        backgroundColor: '#007bff',
+        borderRadius: 6,
+        padding: 14,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontWeight: '600',
+    },
+    error: {
+        color: 'red',
+        marginTop: 16,
+        textAlign: 'center',
+    },
+})
