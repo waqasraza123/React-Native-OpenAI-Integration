@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, Pressable, Platform } from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker'
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css"
 
 interface DateFieldProps {
     value: Date
@@ -21,35 +22,49 @@ export const DateField: React.FC<DateFieldProps> = ({
 }) => {
     const [showPicker, setShowPicker] = useState(false)
 
-    const handleChange = (_: any, selectedDate?: Date) => {
-        setShowPicker(false)
-        if (selectedDate) onChange(selectedDate)
+    const handleChange = (date: Date | null) => {
+        if (date) {
+            onChange(date)
+        }
     }
 
-    const formattedDate = value ? (
-        displayFormat ? displayFormat(value) : value.toDateString()
-    ) : (
-        placeholder
-    )
+    const formattedDate = value
+        ? displayFormat
+            ? displayFormat(value)
+            : value.toDateString()
+        : placeholder
 
     return (
         <View className="mb-4">
-            <Pressable
-                onPress={() => setShowPicker(true)}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-white"
-            >
-                <Text className="text-black">{formattedDate}</Text>
-            </Pressable>
-
-            {showPicker && (
-                <DateTimePicker
-                    value={value}
-                    mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                    onChange={handleChange}
-                    minimumDate={minDate}
-                    maximumDate={maxDate}
+            {Platform.OS === 'web' ? (
+                <DatePicker
+                    selected={value}
+                    onChange={(date: Date | null) => handleChange(date)}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    dateFormat="yyyy-MM-dd"
+                    className="w-full px-4 py-3 rounded-lg border border-border bg-white text-black"
                 />
+            ) : (
+                <>
+                    <Pressable
+                        onPress={() => setShowPicker(true)}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-white"
+                    >
+                        <Text className="text-black">{formattedDate}</Text>
+                    </Pressable>
+
+                    {showPicker && (
+                        <DatePicker
+                            selected={value}
+                            onChange={(date: Date | null) => handleChange(date)}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            inline
+                            className="react-datepicker-inline"
+                        />
+                    )}
+                </>
             )}
         </View>
     )

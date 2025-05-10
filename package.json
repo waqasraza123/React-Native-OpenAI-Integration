@@ -24,6 +24,7 @@
     "nativewind": "^4.1.23",
     "npm": "^11.3.0",
     "react": "19.0.0",
+    "react-datepicker": "^8.3.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-dotenv": "^3.4.11",

@@ -92,11 +92,10 @@ export default function SignUpScreen() {
                 <DateField
                     value={dob}
                     onChange={setDob}
-                    minDate={new Date(1900, 0, 1)}
-                    maxDate={new Date()}
-                    displayFormat={(date: any) => date.toLocaleDateString()}
+                    minDate={new Date(1900, 0, 1)}  // Set a minimum date (e.g., Jan 1, 1900)
+                    maxDate={new Date()}             // Set a maximum date (e.g., today)
+                    displayFormat={(date: Date) => date.toLocaleDateString()} // Custom date format
                 />
-
 
                 <PrimaryButton
                     title="Register"
