@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     View,
     KeyboardAvoidingView,
@@ -26,12 +26,31 @@ export default function LoginScreen() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
+    useEffect(() => {
+        const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session && event === 'SIGNED_IN') {
+                if (Platform.OS === 'web') {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Login Successful',
+                        text2: 'You are now logged in.',
+                    })
+                } else {
+                    Alert.alert('Login Successful', 'You are now logged in.')
+                }
+            }
+        })
+        return () => {
+            listener.subscription.unsubscribe()
+        }
+    }, [])
+
     const handleLogin = async () => {
         try {
             setLoading(true)
             setError(null)
 
-            const { error: loginError } = await supabase.auth.signInWithPassword({
+            const { data, error: loginError } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             })
@@ -41,14 +60,16 @@ export default function LoginScreen() {
                 return
             }
 
-            if (Platform.OS === 'web') {
-                Toast.show({
-                    type: 'success',
-                    text1: 'Login Successful',
-                    text2: 'You are now logged in.',
-                })
-            } else {
-                Alert.alert('Login Successful', 'You are now logged in.')
+            if (data.session) {
+                if (Platform.OS === 'web') {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Login Successful',
+                        text2: 'You are now logged in.',
+                    })
+                } else {
+                    Alert.alert('Login Successful', 'You are now logged in.')
+                }
             }
         } catch (err) {
             console.error(err)
@@ -58,78 +79,15 @@ export default function LoginScreen() {
         }
     }
 
-    const handleGoogleLogin = async () => {
+    const handleOAuthLogin = async (provider: 'google' | 'github' | 'figma') => {
         try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-            })
-
+            const { error } = await supabase.auth.signInWithOAuth({ provider })
             if (error) {
                 setError(error.message)
-            } else {
-                if (Platform.OS === 'web') {
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Google Login Successful',
-                        text2: 'You are now logged in with Google.',
-                    })
-                } else {
-                    Alert.alert('Login Successful', 'You are now logged in with Google.')
-                }
             }
         } catch (err) {
-            console.error('Google login failed', err)
-            setError('Google login failed. Please try again.')
-        }
-    }
-
-    const handleGithubLogin = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'github',
-            })
-
-            if (error) {
-                setError(error.message)
-            } else {
-                if (Platform.OS === 'web') {
-                    Toast.show({
-                        type: 'success',
-                        text1: 'GitHub Login Successful',
-                        text2: 'You are now logged in with GitHub.',
-                    })
-                } else {
-                    Alert.alert('Login Successful', 'You are now logged in with GitHub.')
-                }
-            }
-        } catch (err) {
-            console.error('GitHub login failed', err)
-            setError('GitHub login failed. Please try again.')
-        }
-    }
-
-    const handleFigmaLogin = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'figma',
-            })
-
-            if (error) {
-                setError(error.message)
-            } else {
-                if (Platform.OS === 'web') {
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Figma Login Successful',
-                        text2: 'You are now logged in with Figma.',
-                    })
-                } else {
-                    Alert.alert('Login Successful', 'You are now logged in with Figma.')
-                }
-            }
-        } catch (err) {
-            console.error('Figma login failed', err)
-            setError('Figma login failed. Please try again.')
+            console.error(`${provider} login failed`, err)
+            setError(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login failed. Please try again.`)
         }
     }
 
@@ -176,9 +134,7 @@ export default function LoginScreen() {
                     {/* Error Message */}
                     {error && (
                         <View className="bg-error/10 border border-error rounded-md mt-4 p-2">
-                            <Text className="text-error text-sm text-center">
-                                {error}
-                            </Text>
+                            <Text className="text-error text-sm text-center">{error}</Text>
                         </View>
                     )}
 
@@ -189,9 +145,9 @@ export default function LoginScreen() {
                         <View className="flex-1 h-px bg-gray-300" />
                     </View>
 
-                    {/* Google Sign In */}
+                    {/* OAuth Buttons */}
                     <Pressable
-                        onPress={handleGoogleLogin}
+                        onPress={() => handleOAuthLogin('google')}
                         className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white"
                     >
                         <Image
@@ -206,9 +162,8 @@ export default function LoginScreen() {
                         </Text>
                     </Pressable>
 
-                    {/* GitHub Sign In */}
                     <Pressable
-                        onPress={handleGithubLogin}
+                        onPress={() => handleOAuthLogin('github')}
                         className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
                     >
                         <Image
@@ -223,9 +178,8 @@ export default function LoginScreen() {
                         </Text>
                     </Pressable>
 
-                    {/* Figma Sign In */}
                     <Pressable
-                        onPress={handleFigmaLogin}
+                        onPress={() => handleOAuthLogin('figma')}
                         className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
                     >
                         <Image
