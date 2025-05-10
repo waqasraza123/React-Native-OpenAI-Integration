@@ -64,6 +64,21 @@ export default function LoginScreen() {
         }
     }
 
+    const handleGithubLogin = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'github',
+            })
+
+            if (error) {
+                setError(error.message)
+            }
+        } catch (err) {
+            console.error('GitHub login failed', err)
+            setError('GitHub login failed. Please try again.')
+        }
+    }
+
     return (
         <View className="flex-1 justify-center items-center bg-background px-6">
             <KeyboardAvoidingView
@@ -134,6 +149,23 @@ export default function LoginScreen() {
                         />
                         <Text className="text-base text-gray-800 font-medium">
                             Continue with Google
+                        </Text>
+                    </Pressable>
+
+                    {/* GitHub Sign In */}
+                    <Pressable
+                        onPress={handleGithubLogin}
+                        className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
+                    >
+                        <Image
+                            source={{
+                                uri: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Github_Logo_2018.svg',
+                            }}
+                            style={{ width: 20, height: 20, marginRight: 8 }}
+                            resizeMode="contain"
+                        />
+                        <Text className="text-base text-gray-800 font-medium">
+                            Continue with GitHub
                         </Text>
                     </Pressable>
 
