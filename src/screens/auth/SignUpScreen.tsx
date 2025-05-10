@@ -4,15 +4,18 @@ import {
     ScrollView,
     View,
     Text,
-    TextInput as RNTextInput,
-    ActivityIndicator,
     Pressable,
+    ActivityIndicator,
     Platform,
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { supabase } from '../../lib/supabase'
 import { useNavigation } from '@react-navigation/native'
+import { InputField } from '../../components/fields/InputField'
+import { PasswordField } from '../../components/PasswordField'
+import { PrimaryButton } from '../../components/buttons/PrimaryButton'
 import '../../styles/global.css'
+import { DateField } from '../../components/fields/DateField'
 
 export default function SignUpScreen() {
     const [name, setName] = useState('')
@@ -46,7 +49,10 @@ export default function SignUpScreen() {
             return
         }
 
-        Alert.alert('Success', 'Registration successful! Please check your email to confirm your account.')
+        Alert.alert(
+            'Success',
+            'Registration successful! Please check your email to confirm your account.'
+        )
     }
 
     return (
@@ -59,66 +65,45 @@ export default function SignUpScreen() {
             }}
         >
             <View className="w-full max-w-md bg-surface rounded-xl p-6 shadow-2xl">
-                <Text className="text-3xl font-semibold text-center text-black mb-8">Create an Account</Text>
+                <Text className="text-3xl font-semibold text-center text-black mb-8">
+                    Create an Account
+                </Text>
 
-                <RNTextInput
+                <InputField
                     placeholder="Full Name"
                     value={name}
                     onChangeText={setName}
-                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
-                    placeholderTextColor="#8E8E93"
                 />
 
-                <RNTextInput
+                <InputField
                     placeholder="Email"
                     value={email}
                     onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
-                    placeholderTextColor="#8E8E93"
                 />
 
-                <RNTextInput
+                <PasswordField
                     placeholder="Password"
                     value={password}
                     onChangeText={setPassword}
-                    secureTextEntry
-                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
-                    placeholderTextColor="#8E8E93"
                 />
 
-                <Pressable
-                    onPress={() => setShowDatePicker(true)}
-                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
-                >
-                    <Text className="text-black">{dob.toDateString()}</Text>
-                </Pressable>
+                <DateField
+                    value={dob}
+                    onChange={setDob}
+                    minDate={new Date(1900, 0, 1)}
+                    maxDate={new Date()}
+                    displayFormat={(date: any) => date.toLocaleDateString()}
+                />
 
-                {showDatePicker && (
-                    <DateTimePicker
-                        value={dob}
-                        mode="date"
-                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                        onChange={(_, selectedDate) => {
-                            setShowDatePicker(false)
-                            if (selectedDate) setDob(selectedDate)
-                        }}
-                    />
-                )}
 
-                <Pressable
+                <PrimaryButton
+                    title="Register"
                     onPress={handleSignUp}
-                    disabled={loading}
-                    className={`w-full mt-4 py-3 rounded-lg items-center justify-center ${loading ? 'bg-primary/70' : 'bg-primary'
-                        }`}
-                >
-                    {loading ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text className="text-white font-semibold text-base">Register</Text>
-                    )}
-                </Pressable>
+                    loading={loading}
+                    disabled={!email || !password || !name}
+                />
 
                 <Pressable
                     onPress={() => navigation.navigate('Login')}

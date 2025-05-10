@@ -5,13 +5,14 @@ import {
     Platform,
     Alert,
     Text,
-    TextInput as RNTextInput,
 } from 'react-native'
-import { Button } from 'react-native'
 import { supabase } from '../../lib/supabase'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
+import { PasswordField } from '../../components/PasswordField'
 import '../../styles/global.css'
+import { InputField } from '../../components/fields/InputField'
+import { PrimaryButton } from '../../components/buttons/PrimaryButton'
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
 
@@ -57,36 +58,26 @@ export default function LoginScreen() {
                         Welcome Back
                     </Text>
 
-                    <RNTextInput
+                    <InputField
                         placeholder="Email"
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
                         autoCapitalize="none"
-                        className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
-                        placeholderTextColor="#8E8E93"
                     />
 
-                    <RNTextInput
+                    <PasswordField
                         placeholder="Password"
                         value={password}
                         onChangeText={setPassword}
-                        secureTextEntry
-                        className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
-                        placeholderTextColor="#8E8E93"
                     />
 
-                    <View className="w-full mt-3">
-                        <Button
-                            title={loading ? '' : 'Login'}
-                            disabled={loading || !email || !password}
-                            onPress={handleLogin}
-                            color="#007AFF"
-                        />
-                        {loading && (
-                            <Text className="mt-3 text-center text-accent text-sm">Loading...</Text>
-                        )}
-                    </View>
+                    <PrimaryButton
+                        title="Login"
+                        onPress={handleLogin}
+                        loading={loading}
+                        disabled={!email || !password}
+                    />
 
                     <Text
                         onPress={() => navigation.navigate('SignUp')}
@@ -96,7 +87,11 @@ export default function LoginScreen() {
                         <Text className="text-primary font-semibold">Sign Up</Text>
                     </Text>
 
-                    {error && <Text className="text-error text-center mt-4 text-sm">{error}</Text>}
+                    {error && (
+                        <Text className="text-error text-center mt-4 text-sm">
+                            {error}
+                        </Text>
+                    )}
                 </View>
             </KeyboardAvoidingView>
         </View>
