@@ -2,13 +2,17 @@ import React, { useState } from 'react'
 import {
     Alert,
     ScrollView,
-    StyleSheet,
+    View,
+    Text,
+    TextInput as RNTextInput,
     ActivityIndicator,
+    Pressable,
+    Platform,
 } from 'react-native'
-import { TextInput, Button, Card, Text, Snackbar } from 'react-native-paper'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { supabase } from '../../lib/supabase'
 import { useNavigation } from '@react-navigation/native'
+import '../../styles/global.css'
 
 export default function SignUpScreen() {
     const [name, setName] = useState('')
@@ -46,122 +50,92 @@ export default function SignUpScreen() {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Card style={styles.card}>
-                <Card.Content>
-                    <Text variant='titleLarge' style={styles.title}>Create an Account</Text>
+        <ScrollView
+            className="bg-background px-6 py-12"
+            contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <View className="w-full max-w-md bg-surface rounded-xl p-6 shadow-2xl">
+                <Text className="text-3xl font-semibold text-center text-black mb-8">Create an Account</Text>
 
-                    <TextInput
-                        label="Full Name"
-                        value={name}
-                        onChangeText={setName}
-                        mode="outlined"
-                        style={styles.input}
+                <RNTextInput
+                    placeholder="Full Name"
+                    value={name}
+                    onChangeText={setName}
+                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
+                    placeholderTextColor="#8E8E93"
+                />
+
+                <RNTextInput
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
+                    placeholderTextColor="#8E8E93"
+                />
+
+                <RNTextInput
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
+                    placeholderTextColor="#8E8E93"
+                />
+
+                <Pressable
+                    onPress={() => setShowDatePicker(true)}
+                    className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
+                >
+                    <Text className="text-black">{dob.toDateString()}</Text>
+                </Pressable>
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={dob}
+                        mode="date"
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        onChange={(_, selectedDate) => {
+                            setShowDatePicker(false)
+                            if (selectedDate) setDob(selectedDate)
+                        }}
                     />
+                )}
 
-                    <TextInput
-                        label="Email"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        mode="outlined"
-                        style={styles.input}
-                    />
-
-                    <TextInput
-                        label="Password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                        mode="outlined"
-                        style={styles.input}
-                    />
-
-                    <Button
-                        mode="outlined"
-                        onPress={() => setShowDatePicker(true)}
-                        style={styles.dateButton}
-                    >
-                        {dob.toDateString()}
-                    </Button>
-
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={dob}
-                            mode="date"
-                            display="default"
-                            onChange={(_, selectedDate) => {
-                                setShowDatePicker(false)
-                                if (selectedDate) setDob(selectedDate)
-                            }}
-                        />
+                <Pressable
+                    onPress={handleSignUp}
+                    disabled={loading}
+                    className={`w-full mt-4 py-3 rounded-lg items-center justify-center ${loading ? 'bg-primary/70' : 'bg-primary'
+                        }`}
+                >
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text className="text-white font-semibold text-base">Register</Text>
                     )}
+                </Pressable>
 
-                    <Button
-                        mode="contained"
-                        onPress={handleSignUp}
-                        disabled={loading}
-                        style={styles.submitButton}
-                    >
-                        {loading ? (
-                            <ActivityIndicator color="#fff" />
-                        ) : (
-                            'Register'
-                        )}
-                    </Button>
+                <Pressable
+                    onPress={() => navigation.navigate('Login')}
+                    className="mt-6"
+                >
+                    <Text className="text-sm text-accent text-center">
+                        Already have an account?{' '}
+                        <Text className="text-primary font-semibold">Sign In</Text>
+                    </Text>
+                </Pressable>
 
-                    <Button
-                        mode="text"
-                        onPress={() => navigation.navigate('Login')}
-                        style={styles.signInButton}
-                    >
-                        Already have an account? Sign In
-                    </Button>
-
-                    {error && <Snackbar visible={!!error} onDismiss={() => setError(null)}>{error}</Snackbar>}
-                </Card.Content>
-            </Card>
+                {error && (
+                    <View className="mt-4 p-3 rounded-md bg-error/10 border border-error">
+                        <Text className="text-error text-sm text-center">{error}</Text>
+                    </View>
+                )}
+            </View>
         </ScrollView>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        backgroundColor: '#f2f2f2',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    card: {
-        backgroundColor: '#fff',
-        width: '100%',
-        maxWidth: 380,
-        borderRadius: 10,
-        padding: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-    title: {
-        fontSize: 22,
-        marginBottom: 20,
-        textAlign: 'center',
-        fontWeight: '600',
-    },
-    input: {
-        marginBottom: 16,
-    },
-    dateButton: {
-        marginBottom: 16,
-    },
-    submitButton: {
-        marginTop: 10,
-    },
-    signInButton: {
-        textAlign: 'center',
-        marginTop: 16,
-    },
-})

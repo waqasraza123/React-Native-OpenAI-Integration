@@ -11,7 +11,7 @@ import { Button } from 'react-native'
 import { supabase } from '../../lib/supabase'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
-import '../../styles/global.css';
+import '../../styles/global.css'
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
 
@@ -47,13 +47,13 @@ export default function LoginScreen() {
     }
 
     return (
-        <View className="flex-1 justify-center items-center bg-white px-6">
+        <View className="flex-1 justify-center items-center bg-background px-6">
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 className="flex-1 w-full justify-center items-center"
             >
-                <View className="w-full max-w-md rounded-2xl p-6 items-center bg-white shadow-lg">
-                    <Text className="text-2xl font-semibold text-center mb-6 text-black">
+                <View className="w-full max-w-md rounded-lg p-6 bg-surface shadow-2xl">
+                    <Text className="text-3xl font-semibold text-center mb-8 text-black leading-snug">
                         Welcome Back
                     </Text>
 
@@ -63,8 +63,8 @@ export default function LoginScreen() {
                         onChangeText={setEmail}
                         keyboardType="email-address"
                         autoCapitalize="none"
-                        className="w-full px-4 py-3 mb-4 rounded-lg border border-gray-300 bg-white text-black"
-                        placeholderTextColor="#888"
+                        className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
+                        placeholderTextColor="#8E8E93"
                     />
 
                     <RNTextInput
@@ -72,29 +72,31 @@ export default function LoginScreen() {
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry
-                        className="w-full px-4 py-3 mb-4 rounded-lg border border-gray-300 bg-white text-black"
-                        placeholderTextColor="#888"
+                        className="w-full px-4 py-3 mb-4 rounded-lg border border-border bg-white text-black text-base"
+                        placeholderTextColor="#8E8E93"
                     />
 
-                    <View className="w-full mt-2">
+                    <View className="w-full mt-3">
                         <Button
                             title={loading ? '' : 'Login'}
                             disabled={loading || !email || !password}
                             onPress={handleLogin}
                             color="#007AFF"
                         />
-                        {loading && 'Loading...'}
+                        {loading && (
+                            <Text className="mt-3 text-center text-accent text-sm">Loading...</Text>
+                        )}
                     </View>
 
                     <Text
                         onPress={() => navigation.navigate('SignUp')}
-                        className="mt-6 text-sm text-gray-700"
+                        className="mt-6 text-sm text-accent text-center"
                     >
                         Don't have an account?{' '}
-                        <Text className="text-blue-600 font-semibold">Sign Up</Text>
+                        <Text className="text-primary font-semibold">Sign Up</Text>
                     </Text>
 
-                    {error && <Text className="text-red-500 text-center mt-4">{error}</Text>}
+                    {error && <Text className="text-error text-center mt-4 text-sm">{error}</Text>}
                 </View>
             </KeyboardAvoidingView>
         </View>
