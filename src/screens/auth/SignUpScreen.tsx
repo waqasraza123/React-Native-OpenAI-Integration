@@ -5,6 +5,7 @@ import {
     Text,
     Pressable,
     Alert,
+    Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
@@ -14,6 +15,7 @@ import { PasswordField } from '../../components/PasswordField';
 import { PrimaryButton } from '../../components/buttons/PrimaryButton';
 import { DateField } from '../../components/fields/DateField';
 import ProfilePhotoUpload from '../../components/ProfilePhotoUpload';
+import Toast from 'react-native-toast-message';
 
 export default function SignUpScreen() {
     const [name, setName] = useState('');
@@ -51,10 +53,15 @@ export default function SignUpScreen() {
             return;
         }
 
-        Alert.alert(
-            'Success',
-            'Registration successful! Please check your email to confirm your account.'
-        );
+        if (Platform.OS === 'web') {
+            Toast.show({
+                type: 'success',
+                text1: 'Registration Successful',
+                text2: 'Please check your email to confirm your account.',
+            });
+        } else {
+            Alert.alert('Success', 'Registration successful! Please check your email to confirm your account.');
+        }
     };
 
     return (
