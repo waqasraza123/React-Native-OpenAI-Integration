@@ -7,107 +7,75 @@ const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) =>
     const [imageUri, setImageUri] = useState<string | null>(null);
 
     const handleImagePick = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            Alert.alert("Permission required", "You need to grant permission to pick an image.");
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) {
+            Alert.alert("Permission Required", "We need access to your photo library.");
             return;
         }
 
-        const result: any = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
 
-        if (result.cancelled) {
-            return;
-        }
-
-        if ('uri' in result) {
-            setImageUri(result.uri);
-            onImagePicked(result.uri);
-        } else {
-            Alert.alert("Error", "Failed to select an image.");
+        if (!result.canceled && result.assets?.[0]?.uri) {
+            const uri = result.assets[0].uri;
+            setImageUri(uri);
+            onImagePicked(uri);
         }
     };
 
     const handleTakePhoto = async () => {
-        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-        if (permissionResult.granted === false) {
-            Alert.alert("Permission required", "You need to grant permission to use the camera.");
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) {
+            Alert.alert("Permission Required", "We need access to your camera.");
             return;
         }
 
-        const result: any = await ImagePicker.launchCameraAsync({
+        const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
 
-        if (result.cancelled) {
-            return;
-        }
-
-        if ('uri' in result) {
-            setImageUri(result.uri);
-            onImagePicked(result.uri);
-        } else {
-            Alert.alert("Error", "Failed to take a photo.");
+        if (!result.canceled && result.assets?.[0]?.uri) {
+            const uri = result.assets[0].uri;
+            setImageUri(uri);
+            onImagePicked(uri);
         }
     };
 
     return (
-        <View style={{ alignItems: 'center', marginBottom: 20 }}>
-            {imageUri ? (
-                <Image
-                    source={{ uri: imageUri }}
-                    style={{
-                        width: 120,
-                        height: 120,
-                        borderRadius: 60,
-                        borderWidth: 4,
-                        borderColor: '#fff',
-                        marginBottom: 10,
-                    }}
-                />
-            ) : (
-                <View
-                    style={{
-                        width: 120,
-                        height: 120,
-                        borderRadius: 60,
-                        borderWidth: 4,
-                        borderColor: '#ccc',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: 10,
-                    }}
+        <View className="items-center space-y-4">
+            <View className="w-32 h-32 rounded-full border-4 border-gray-200 shadow-md overflow-hidden">
+                {imageUri ? (
+                    <Image source={{ uri: imageUri }} className="w-full h-full" />
+                ) : (
+                    <View className="flex-1 justify-center items-center bg-gray-100">
+                        <MaterialIcons name="camera-alt" size={40} color="#9ca3af" />
+                    </View>
+                )}
+            </View>
+
+            <View className="flex-row space-x-4">
+                <Pressable
+                    onPress={handleImagePick}
+                    className="flex-row items-center px-4 py-2 rounded-full bg-primary shadow"
                 >
-                    <MaterialIcons name="camera-alt" size={40} color="#ccc" />
-                </View>
-            )}
-            <Pressable
-                onPress={handleImagePick}
-                style={{
-                    backgroundColor: '#007AFF',
-                    padding: 10,
-                    borderRadius: 8,
-                    marginBottom: 10,
-                }}
-            >
-                <Text style={{ color: '#fff' }}>Choose Photo</Text>
-            </Pressable>
-            <Pressable
-                onPress={handleTakePhoto}
-                style={{
-                    backgroundColor: '#FF9500',
-                    padding: 10,
-                    borderRadius: 8,
-                }}
-            >
-                <Text style={{ color: '#fff' }}>Take Photo</Text>
-            </Pressable>
+                    <MaterialIcons name="photo-library" size={20} color="#fff" />
+                    <Text className="ml-2 text-white font-medium">Choose Photo</Text>
+                </Pressable>
+
+                <Pressable
+                    onPress={handleTakePhoto}
+                    className="flex-row items-center px-4 py-2 rounded-full bg-accent shadow"
+                >
+                    <MaterialIcons name="photo-camera" size={20} color="#fff" />
+                    <Text className="ml-2 text-white font-medium">Take Photo</Text>
+                </Pressable>
+            </View>
         </View>
     );
 };

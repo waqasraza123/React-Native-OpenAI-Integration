@@ -10,9 +10,9 @@ import { supabase } from '../../lib/supabase'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 import { PasswordField } from '../../components/PasswordField'
-import '../../styles/global.css'
 import { InputField } from '../../components/fields/InputField'
 import { PrimaryButton } from '../../components/buttons/PrimaryButton'
+import '../../styles/global.css'
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
 
@@ -53,10 +53,17 @@ export default function LoginScreen() {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 className="flex-1 w-full justify-center items-center"
             >
-                <View className="w-full max-w-md rounded-lg p-6 bg-surface shadow-2xl">
-                    <Text className="text-3xl font-semibold text-center mb-8 text-black leading-snug">
-                        Welcome Back
-                    </Text>
+                <View className="w-full max-w-md bg-surface p-8 rounded-xl shadow-2xl">
+
+                    {/* Text Logo Branding */}
+                    <View className="items-center mb-8">
+                        <Text className="text-3xl font-extrabold text-primary tracking-tight">
+                            MagicLink
+                        </Text>
+                        <Text className="text-base text-gray-500 mt-1">
+                            Secure login via magic link or password
+                        </Text>
+                    </View>
 
                     <InputField
                         placeholder="Email"
@@ -79,6 +86,14 @@ export default function LoginScreen() {
                         disabled={!email || !password}
                     />
 
+                    {error && (
+                        <View className="bg-error/10 border border-error rounded-md mt-4 p-2">
+                            <Text className="text-error text-sm text-center">
+                                {error}
+                            </Text>
+                        </View>
+                    )}
+
                     <Text
                         onPress={() => navigation.navigate('SignUp')}
                         className="mt-6 text-sm text-accent text-center"
@@ -86,12 +101,6 @@ export default function LoginScreen() {
                         Don't have an account?{' '}
                         <Text className="text-primary font-semibold">Sign Up</Text>
                     </Text>
-
-                    {error && (
-                        <Text className="text-error text-center mt-4 text-sm">
-                            {error}
-                        </Text>
-                    )}
                 </View>
             </KeyboardAvoidingView>
         </View>
