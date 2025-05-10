@@ -5,6 +5,8 @@ import {
     Platform,
     Alert,
     Text,
+    Pressable,
+    Image,
 } from 'react-native'
 import { supabase } from '../../lib/supabase'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -47,6 +49,21 @@ export default function LoginScreen() {
         }
     }
 
+    const handleGoogleLogin = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+            })
+
+            if (error) {
+                setError(error.message)
+            }
+        } catch (err) {
+            console.error('Google login failed', err)
+            setError('Google login failed. Please try again.')
+        }
+    }
+
     return (
         <View className="flex-1 justify-center items-center bg-background px-6">
             <KeyboardAvoidingView
@@ -55,7 +72,7 @@ export default function LoginScreen() {
             >
                 <View className="w-full max-w-md bg-surface p-8 rounded-xl shadow-2xl">
 
-                    {/* Text Logo Branding */}
+                    {/* Branding */}
                     <View className="items-center mb-8">
                         <Text className="text-3xl font-extrabold text-primary tracking-tight">
                             MagicLink
@@ -65,6 +82,7 @@ export default function LoginScreen() {
                         </Text>
                     </View>
 
+                    {/* Email/Password Login */}
                     <InputField
                         placeholder="Email"
                         value={email}
@@ -86,6 +104,7 @@ export default function LoginScreen() {
                         disabled={!email || !password}
                     />
 
+                    {/* Error Message */}
                     {error && (
                         <View className="bg-error/10 border border-error rounded-md mt-4 p-2">
                             <Text className="text-error text-sm text-center">
@@ -94,6 +113,31 @@ export default function LoginScreen() {
                         </View>
                     )}
 
+                    {/* Divider */}
+                    <View className="flex-row items-center my-6">
+                        <View className="flex-1 h-px bg-gray-300" />
+                        <Text className="mx-3 text-gray-400 text-sm">or</Text>
+                        <View className="flex-1 h-px bg-gray-300" />
+                    </View>
+
+                    {/* Google Sign In */}
+                    <Pressable
+                        onPress={handleGoogleLogin}
+                        className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white"
+                    >
+                        <Image
+                            source={{
+                                uri: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
+                            }}
+                            style={{ width: 20, height: 20, marginRight: 8 }}
+                            resizeMode="contain"
+                        />
+                        <Text className="text-base text-gray-800 font-medium">
+                            Continue with Google
+                        </Text>
+                    </Pressable>
+
+                    {/* Sign Up Link */}
                     <Text
                         onPress={() => navigation.navigate('SignUp')}
                         className="mt-6 text-sm text-accent text-center"
