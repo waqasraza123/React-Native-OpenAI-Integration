@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, Pressable, Platform } from 'react-native'
 import DatePicker from 'react-datepicker'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import "react-datepicker/dist/react-datepicker.css"
 
 interface DateFieldProps {
@@ -47,6 +48,7 @@ export const DateField: React.FC<DateFieldProps> = ({
                 />
             ) : (
                 <>
+                    {/* Native Date Picker for Android/iOS */}
                     <Pressable
                         onPress={() => setShowPicker(true)}
                         className="w-full px-4 py-3 rounded-lg border border-border bg-white"
@@ -55,13 +57,18 @@ export const DateField: React.FC<DateFieldProps> = ({
                     </Pressable>
 
                     {showPicker && (
-                        <DatePicker
-                            selected={value}
-                            onChange={(date: Date | null) => handleChange(date)}
-                            minDate={minDate}
-                            maxDate={maxDate}
-                            inline
-                            className="react-datepicker-inline"
+                        <DateTimePicker
+                            value={value}
+                            mode="date"
+                            display="default"
+                            onChange={(_: any, selectedDate: any) => {
+                                setShowPicker(false)
+                                if (selectedDate) {
+                                    handleChange(selectedDate)
+                                }
+                            }}
+                            minimumDate={minDate}
+                            maximumDate={maxDate}
                         />
                     )}
                 </>
