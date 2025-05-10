@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, Image, Alert } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+    View,
+    Text,
+    Pressable,
+    Image,
+    Alert,
+    Platform,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
 const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) => void }) => {
     const [imageUri, setImageUri] = useState<string | null>(null);
+    const { showActionSheetWithOptions } = useActionSheet();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const handleImagePick = async () => {
+    const handleWebFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const uri = URL.createObjectURL(file);
+            setImageUri(uri);
+            onImagePicked(uri);
+        }
+    };
+
+    const openPicker = async () => {
         const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permission.granted) {
             Alert.alert("Permission Required", "We need access to your photo library.");
@@ -27,7 +46,7 @@ const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) =>
         }
     };
 
-    const handleTakePhoto = async () => {
+    const openCamera = async () => {
         const permission = await ImagePicker.requestCameraPermissionsAsync();
         if (!permission.granted) {
             Alert.alert("Permission Required", "We need access to your camera.");
@@ -47,35 +66,57 @@ const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) =>
         }
     };
 
+    const handlePhotoAction = () => {
+        if (Platform.OS === 'web') {
+            fileInputRef.current?.click();
+        } else {
+            const options = ['Take Photo', 'Choose from Library', 'Cancel'];
+            const cancelButtonIndex = 2;
+
+            showActionSheetWithOptions(
+                {
+                    options,
+                    cancelButtonIndex,
+                },
+                (selectedIndex: any) => {
+                    switch (selectedIndex) {
+                        case 0:
+                            openCamera();
+                            break;
+                        case 1:
+                            openPicker();
+                            break;
+                    }
+                }
+            );
+        }
+    };
+
     return (
         <View className="items-center space-y-4">
-            <View className="w-32 h-32 rounded-full border-4 border-gray-200 shadow-md overflow-hidden">
+            <Pressable
+                onPress={handlePhotoAction}
+                className="w-32 h-32 rounded-full border-4 border-gray-200 shadow-md overflow-hidden"
+            >
                 {imageUri ? (
                     <Image source={{ uri: imageUri }} className="w-full h-full" />
                 ) : (
                     <View className="flex-1 justify-center items-center bg-gray-100">
                         <MaterialIcons name="camera-alt" size={40} color="#9ca3af" />
+                        <Text className="text-sm text-gray-400 mt-2">Tap to upload</Text>
                     </View>
                 )}
-            </View>
+            </Pressable>
 
-            <View className="flex-row space-x-4">
-                <Pressable
-                    onPress={handleImagePick}
-                    className="flex-row items-center px-4 py-2 rounded-full bg-primary shadow"
-                >
-                    <MaterialIcons name="photo-library" size={20} color="#fff" />
-                    <Text className="ml-2 text-white font-medium">Choose Photo</Text>
-                </Pressable>
-
-                <Pressable
-                    onPress={handleTakePhoto}
-                    className="flex-row items-center px-4 py-2 rounded-full bg-accent shadow"
-                >
-                    <MaterialIcons name="photo-camera" size={20} color="#fff" />
-                    <Text className="ml-2 text-white font-medium">Take Photo</Text>
-                </Pressable>
-            </View>
+            {Platform.OS === 'web' && (
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleWebFileChange}
+                />
+            )}
         </View>
     );
 };
