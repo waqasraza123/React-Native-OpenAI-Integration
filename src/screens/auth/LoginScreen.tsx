@@ -23,12 +23,20 @@ export default function LoginScreen() {
     const navigation = useNavigation<LoginScreenNavigationProp>()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [phone, setPhone] = useState('')
+    const [otp, setOtp] = useState('')
+    const [otpSent, setOtpSent] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [initialSession, setInitialSession] = useState<any>(undefined)
 
     useEffect(() => {
+        supabase.auth.getSession().then(({ data }) => {
+            setInitialSession(data.session)
+        })
+
         const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-            if (session && event === 'SIGNED_IN') {
+            if (event === 'SIGNED_IN' && initialSession == null) {
                 if (Platform.OS === 'web') {
                     Toast.show({
                         type: 'success',
@@ -38,12 +46,14 @@ export default function LoginScreen() {
                 } else {
                     Alert.alert('Login Successful', 'You are now logged in.')
                 }
+                setInitialSession(session)
             }
         })
+
         return () => {
             listener.subscription.unsubscribe()
         }
-    }, [])
+    }, [initialSession])
 
     const handleLogin = async () => {
         try {
@@ -61,15 +71,8 @@ export default function LoginScreen() {
             }
 
             if (data.session) {
-                if (Platform.OS === 'web') {
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Login Successful',
-                        text2: 'You are now logged in.',
-                    })
-                } else {
-                    Alert.alert('Login Successful', 'You are now logged in.')
-                }
+                Alert.alert('Login Successful', 'You are now logged in.')
+                setInitialSession(data.session)
             }
         } catch (err) {
             console.error(err)
@@ -79,15 +82,61 @@ export default function LoginScreen() {
         }
     }
 
+    const sendOtp = async () => {
+        try {
+            setLoading(true)
+            const { error } = await supabase.auth.signInWithOtp({
+                phone,
+            })
+
+            if (error) {
+                setError(error.message)
+                return
+            }
+
+            setOtpSent(true)
+            Alert.alert('OTP Sent', 'Check your phone for a verification code.')
+        } catch (err) {
+            console.error(err)
+            setError('Failed to send OTP.')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const verifyOtp = async () => {
+        try {
+            setLoading(true)
+            const { data, error } = await supabase.auth.verifyOtp({
+                phone,
+                token: otp,
+                type: 'sms',
+            })
+
+            if (error) {
+                setError(error.message)
+                return
+            }
+
+            if (data.session) {
+                Alert.alert('Login Successful', 'You are now logged in via phone.')
+                setInitialSession(data.session)
+            }
+        } catch (err) {
+            console.error(err)
+            setError('OTP verification failed.')
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleOAuthLogin = async (provider: 'google' | 'github' | 'figma') => {
         try {
             const { error } = await supabase.auth.signInWithOAuth({ provider })
-            if (error) {
-                setError(error.message)
-            }
+            if (error) setError(error.message)
         } catch (err) {
             console.error(`${provider} login failed`, err)
-            setError(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login failed. Please try again.`)
+            setError(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login failed.`)
         }
     }
 
@@ -98,18 +147,12 @@ export default function LoginScreen() {
                 className="flex-1 w-full justify-center items-center"
             >
                 <View className="w-full max-w-md bg-surface p-8 rounded-xl shadow-2xl">
-
-                    {/* Branding */}
                     <View className="items-center mb-8">
-                        <Text className="text-3xl font-extrabold text-primary tracking-tight">
-                            MagicLink
-                        </Text>
-                        <Text className="text-base text-gray-500 mt-1">
-                            Secure login via magic link or password
-                        </Text>
+                        <Text className="text-3xl font-extrabold text-primary tracking-tight">MagicLink</Text>
+                        <Text className="text-base text-gray-500 mt-1">Secure login with multiple options</Text>
                     </View>
 
-                    {/* Email/Password Login */}
+                    {/* Email Login */}
                     <InputField
                         placeholder="Email"
                         value={email}
@@ -117,26 +160,17 @@ export default function LoginScreen() {
                         keyboardType="email-address"
                         autoCapitalize="none"
                     />
-
                     <PasswordField
                         placeholder="Password"
                         value={password}
                         onChangeText={setPassword}
                     />
-
                     <PrimaryButton
-                        title="Login"
+                        title="Login with Email"
                         onPress={handleLogin}
                         loading={loading}
                         disabled={!email || !password}
                     />
-
-                    {/* Error Message */}
-                    {error && (
-                        <View className="bg-error/10 border border-error rounded-md mt-4 p-2">
-                            <Text className="text-error text-sm text-center">{error}</Text>
-                        </View>
-                    )}
 
                     {/* Divider */}
                     <View className="flex-row items-center my-6">
@@ -145,21 +179,53 @@ export default function LoginScreen() {
                         <View className="flex-1 h-px bg-gray-300" />
                     </View>
 
+                    {/* Phone Login */}
+                    <InputField
+                        placeholder="Phone (+1234567890)"
+                        value={phone}
+                        onChangeText={setPhone}
+                        keyboardType="phone-pad"
+                    />
+                    {otpSent && (
+                        <InputField
+                            placeholder="OTP Code"
+                            value={otp}
+                            onChangeText={setOtp}
+                            keyboardType="number-pad"
+                        />
+                    )}
+                    {!otpSent ? (
+                        <PrimaryButton
+                            title="Send OTP"
+                            onPress={sendOtp}
+                            loading={loading}
+                            disabled={!phone}
+                        />
+                    ) : (
+                        <PrimaryButton
+                            title="Verify OTP"
+                            onPress={verifyOtp}
+                            loading={loading}
+                            disabled={!otp}
+                        />
+                    )}
+
+                    {error && (
+                        <View className="bg-error/10 border border-error rounded-md mt-4 p-2">
+                            <Text className="text-error text-sm text-center">{error}</Text>
+                        </View>
+                    )}
+
                     {/* OAuth Buttons */}
                     <Pressable
                         onPress={() => handleOAuthLogin('google')}
-                        className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white"
+                        className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
                     >
                         <Image
-                            source={{
-                                uri: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-                            }}
+                            source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png' }}
                             style={{ width: 20, height: 20, marginRight: 8 }}
-                            resizeMode="contain"
                         />
-                        <Text className="text-base text-gray-800 font-medium">
-                            Continue with Google
-                        </Text>
+                        <Text className="text-base text-gray-800 font-medium">Continue with Google</Text>
                     </Pressable>
 
                     <Pressable
@@ -167,15 +233,10 @@ export default function LoginScreen() {
                         className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
                     >
                         <Image
-                            source={{
-                                uri: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Github_Logo_2018.svg',
-                            }}
+                            source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Github_Logo_2018.svg' }}
                             style={{ width: 20, height: 20, marginRight: 8 }}
-                            resizeMode="contain"
                         />
-                        <Text className="text-base text-gray-800 font-medium">
-                            Continue with GitHub
-                        </Text>
+                        <Text className="text-base text-gray-800 font-medium">Continue with GitHub</Text>
                     </Pressable>
 
                     <Pressable
@@ -183,18 +244,12 @@ export default function LoginScreen() {
                         className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
                     >
                         <Image
-                            source={{
-                                uri: 'https://cdn.worldvectorlogo.com/logos/figma-1.svg',
-                            }}
+                            source={{ uri: 'https://cdn.worldvectorlogo.com/logos/figma-1.svg' }}
                             style={{ width: 20, height: 20, marginRight: 8 }}
-                            resizeMode="contain"
                         />
-                        <Text className="text-base text-gray-800 font-medium">
-                            Continue with Figma
-                        </Text>
+                        <Text className="text-base text-gray-800 font-medium">Continue with Figma</Text>
                     </Pressable>
 
-                    {/* Sign Up Link */}
                     <Text
                         onPress={() => navigation.navigate('SignUp')}
                         className="mt-6 text-sm text-accent text-center"
