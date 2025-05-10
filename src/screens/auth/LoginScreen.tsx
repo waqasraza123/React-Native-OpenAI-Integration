@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 import { PasswordField } from '../../components/PasswordField'
 import { InputField } from '../../components/fields/InputField'
 import { PrimaryButton } from '../../components/buttons/PrimaryButton'
+import Toast from 'react-native-toast-message'
 import '../../styles/global.css'
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
@@ -40,7 +41,15 @@ export default function LoginScreen() {
                 return
             }
 
-            Alert.alert('Login Successful', 'You are now logged in.')
+            if (Platform.OS === 'web') {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Login Successful',
+                    text2: 'You are now logged in.',
+                })
+            } else {
+                Alert.alert('Login Successful', 'You are now logged in.')
+            }
         } catch (err) {
             console.error(err)
             setError('Login failed. Please try again.')
@@ -57,6 +66,16 @@ export default function LoginScreen() {
 
             if (error) {
                 setError(error.message)
+            } else {
+                if (Platform.OS === 'web') {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Google Login Successful',
+                        text2: 'You are now logged in with Google.',
+                    })
+                } else {
+                    Alert.alert('Login Successful', 'You are now logged in with Google.')
+                }
             }
         } catch (err) {
             console.error('Google login failed', err)
@@ -72,6 +91,16 @@ export default function LoginScreen() {
 
             if (error) {
                 setError(error.message)
+            } else {
+                if (Platform.OS === 'web') {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'GitHub Login Successful',
+                        text2: 'You are now logged in with GitHub.',
+                    })
+                } else {
+                    Alert.alert('Login Successful', 'You are now logged in with GitHub.')
+                }
             }
         } catch (err) {
             console.error('GitHub login failed', err)
@@ -87,6 +116,16 @@ export default function LoginScreen() {
 
             if (error) {
                 setError(error.message)
+            } else {
+                if (Platform.OS === 'web') {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Figma Login Successful',
+                        text2: 'You are now logged in with Figma.',
+                    })
+                } else {
+                    Alert.alert('Login Successful', 'You are now logged in with Figma.')
+                }
             }
         } catch (err) {
             console.error('Figma login failed', err)
