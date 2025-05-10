@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import LoginScreen from './src/screens/auth/LoginScreen'
 import SignUpScreen from './src/screens/auth/SignUpScreen'
+import './src/styles/global.css';
 
 const Stack = createNativeStackNavigator<any>()
 

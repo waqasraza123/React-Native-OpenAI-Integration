@@ -2,13 +2,10 @@ import React, { useState } from 'react'
 import {
     Alert,
     ScrollView,
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    ActivityIndicator,
     StyleSheet,
+    ActivityIndicator,
 } from 'react-native'
+import { TextInput, Button, Card, Text, Snackbar } from 'react-native-paper'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { supabase } from '../../lib/supabase'
 import { useNavigation } from '@react-navigation/native'
@@ -50,69 +47,81 @@ export default function SignUpScreen() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.card}>
-                <Text style={styles.title}>Create an Account</Text>
+            <Card style={styles.card}>
+                <Card.Content>
+                    <Text variant='titleLarge' style={styles.title}>Create an Account</Text>
 
-                <TextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Full Name"
-                    style={styles.input}
-                />
-
-                <TextInput
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="you@example.com"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    style={styles.input}
-                />
-
-                <TextInput
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="Password"
-                    secureTextEntry
-                    style={styles.input}
-                />
-
-                <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
-                    <Text>{dob.toDateString()}</Text>
-                </TouchableOpacity>
-
-                {showDatePicker && (
-                    <DateTimePicker
-                        value={dob}
-                        mode="date"
-                        display="default"
-                        onChange={(_, selectedDate) => {
-                            setShowDatePicker(false)
-                            if (selectedDate) setDob(selectedDate)
-                        }}
+                    <TextInput
+                        label="Full Name"
+                        value={name}
+                        onChangeText={setName}
+                        mode="outlined"
+                        style={styles.input}
                     />
-                )}
 
-                <TouchableOpacity
-                    onPress={handleSignUp}
-                    style={styles.submitButton}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text style={styles.submitButtonText}>Register</Text>
+                    <TextInput
+                        label="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        mode="outlined"
+                        style={styles.input}
+                    />
+
+                    <TextInput
+                        label="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                        mode="outlined"
+                        style={styles.input}
+                    />
+
+                    <Button
+                        mode="outlined"
+                        onPress={() => setShowDatePicker(true)}
+                        style={styles.dateButton}
+                    >
+                        {dob.toDateString()}
+                    </Button>
+
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={dob}
+                            mode="date"
+                            display="default"
+                            onChange={(_, selectedDate) => {
+                                setShowDatePicker(false)
+                                if (selectedDate) setDob(selectedDate)
+                            }}
+                        />
                     )}
-                </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={{ textAlign: 'center', marginTop: 16, color: '#007bff' }}>
+                    <Button
+                        mode="contained"
+                        onPress={handleSignUp}
+                        disabled={loading}
+                        style={styles.submitButton}
+                    >
+                        {loading ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            'Register'
+                        )}
+                    </Button>
+
+                    <Button
+                        mode="text"
+                        onPress={() => navigation.navigate('Login')}
+                        style={styles.signInButton}
+                    >
                         Already have an account? Sign In
-                    </Text>
-                </TouchableOpacity>
+                    </Button>
 
-                {error && <Text style={styles.error}>{error}</Text>}
-            </View>
+                    {error && <Snackbar visible={!!error} onDismiss={() => setError(null)}>{error}</Snackbar>}
+                </Card.Content>
+            </Card>
         </ScrollView>
     )
 }
@@ -143,34 +152,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 6,
-        padding: 10,
         marginBottom: 16,
     },
     dateButton: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 6,
-        padding: 12,
         marginBottom: 16,
-        backgroundColor: '#f9f9f9',
     },
     submitButton: {
-        backgroundColor: '#007bff',
-        borderRadius: 6,
-        padding: 14,
-        alignItems: 'center',
         marginTop: 10,
     },
-    submitButtonText: {
-        color: '#fff',
-        fontWeight: '600',
-    },
-    error: {
-        color: 'red',
-        marginTop: 16,
+    signInButton: {
         textAlign: 'center',
+        marginTop: 16,
     },
 })
