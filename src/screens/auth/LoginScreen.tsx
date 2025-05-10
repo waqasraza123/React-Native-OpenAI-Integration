@@ -79,6 +79,21 @@ export default function LoginScreen() {
         }
     }
 
+    const handleFigmaLogin = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'figma',
+            })
+
+            if (error) {
+                setError(error.message)
+            }
+        } catch (err) {
+            console.error('Figma login failed', err)
+            setError('Figma login failed. Please try again.')
+        }
+    }
+
     return (
         <View className="flex-1 justify-center items-center bg-background px-6">
             <KeyboardAvoidingView
@@ -166,6 +181,23 @@ export default function LoginScreen() {
                         />
                         <Text className="text-base text-gray-800 font-medium">
                             Continue with GitHub
+                        </Text>
+                    </Pressable>
+
+                    {/* Figma Sign In */}
+                    <Pressable
+                        onPress={handleFigmaLogin}
+                        className="flex-row items-center justify-center border border-gray-300 rounded-lg py-3 bg-white mt-4"
+                    >
+                        <Image
+                            source={{
+                                uri: 'https://cdn.worldvectorlogo.com/logos/figma-1.svg',
+                            }}
+                            style={{ width: 20, height: 20, marginRight: 8 }}
+                            resizeMode="contain"
+                        />
+                        <Text className="text-base text-gray-800 font-medium">
+                            Continue with Figma
                         </Text>
                     </Pressable>
 
