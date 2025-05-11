@@ -10,7 +10,7 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
-          borderTopColor: '#e5e5e5',
+          borderTopColor: '#E2E8F0',
           height: Platform.OS === 'ios' ? 88 : 60,
           paddingBottom: Platform.OS === 'ios' ? 28 : 8,
           paddingTop: 8,
@@ -23,8 +23,8 @@ export default function TabLayout() {
           shadowOpacity: 0.1,
           shadowRadius: 3,
         },
-        tabBarActiveTintColor: '#34C759',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: '#6366F1',
+        tabBarInactiveTintColor: '#64748B',
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '500',
@@ -33,7 +33,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="chat"
+        name="chat/index"
         options={{
           title: 'Chat',
           tabBarIcon: ({ size, color }) => (
@@ -42,7 +42,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="subscription"
+        name="subscription/index"
         options={{
           title: 'Subscription',
           tabBarIcon: ({ size, color }) => (
@@ -51,7 +51,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/index"
         options={{
           title: 'Profile',
           tabBarIcon: ({ size, color }) => (
