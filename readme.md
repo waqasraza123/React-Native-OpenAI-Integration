@@ -116,3 +116,5 @@ const { error } = await supabase.auth.signInWithOtp({
 await supabase.auth.signInWithOAuth({ provider: 'google' });
 await supabase.auth.signInWithOAuth({ provider: 'github' });
 ```
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
