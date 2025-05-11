@@ -21,6 +21,7 @@ const Tab = createBottomTabNavigator();
 function TabNavigator() {
   return (
     <Tab.Navigator
+      initialRouteName="Chat"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
@@ -84,9 +85,9 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="MainTabs" component={TabNavigator} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="MainTabs" component={TabNavigator} />
         </Stack.Navigator>
         <Toast />
       </NavigationContainer>
