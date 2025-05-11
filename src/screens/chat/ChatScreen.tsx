@@ -75,12 +75,12 @@ export default function ChatScreen() {
   const renderEmptyState = () => (
     <Animated.View
       entering={FadeIn}
-      className="flex justify-center items-center px-6"
+      className="flex justify-center items-center px-8"
       style={{ height: windowHeight - HEADER_HEIGHT - 100 }}
     >
       <Image
         source={ASSISTANT_AVATAR}
-        className="w-30 h-30 rounded-full mb-6"
+        className="w-30 h-30 rounded-full mb-6 mx-auto"
         contentFit="cover"
       />
       <Text className="text-2xl font-semibold text-gray-900 mb-2 text-center">How can I help you today?</Text>
@@ -104,7 +104,7 @@ export default function ChatScreen() {
   ), [copied, handleCopy]);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white px-4">
 
       <FlatList
         ref={flatListRef}
@@ -114,7 +114,7 @@ export default function ChatScreen() {
           <Animated.View
             entering={FadeIn}
             layout={Layout.springify()}
-            className="mb-3"
+            className="mb-3 px-4 py-4"
           >
             <ChatBubble
               message={item}
