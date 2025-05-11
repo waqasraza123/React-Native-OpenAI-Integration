@@ -20,7 +20,7 @@ import Animated, {
 import { Image } from 'expo-image';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const HEADER_HEIGHT = 60;
+const HEADER_HEIGHT = 200;
 const ASSISTANT_AVATAR = 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
 export default function ChatScreen() {
@@ -43,7 +43,6 @@ export default function ChatScreen() {
     setLoading(true);
 
     try {
-      // Simulate AI response - Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -72,20 +71,6 @@ export default function ChatScreen() {
   const handleRefresh = useCallback(() => {
     setMessages([]);
   }, []);
-
-  const renderHeader = () => (
-    <Animated.View
-      entering={FadeIn}
-      className={`h-[${HEADER_HEIGHT}px] bg-white border-b border-gray-200 justify-center ${Platform.OS === 'web' ? 'shadow-lg' : ''
-        }`}
-    >
-      <View className="flex flex-row items-center justify-between px-4">
-        <Icon name="bars" size={24} color="#374151" />
-        <Text className="text-lg font-semibold text-gray-900">Chat Assistant</Text>
-        <Icon name="sparkles" size={24} color="#6366F1" />
-      </View>
-    </Animated.View>
-  );
 
   const renderEmptyState = () => (
     <Animated.View
@@ -120,7 +105,6 @@ export default function ChatScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {renderHeader()}
 
       <FlatList
         ref={flatListRef}
