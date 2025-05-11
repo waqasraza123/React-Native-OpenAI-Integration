@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
-import {
-  View,
-  TextInput,
-  Pressable,
-  ActivityIndicator,
-  Platform,
-} from 'react-native';
+import { View, Pressable, ActivityIndicator, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import Animated, {
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { InputField } from '../fields/InputField';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -47,20 +39,15 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
           className="flex-1 bg-gray-100 rounded-xl px-4 py-2 justify-center"
           style={animatedHeight}
         >
-          <TextInput
-            className={`
-              text-base text-gray-800 pb-0 pt-0 max-h-30
-              rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600
-              ${Platform.OS === 'web' ? 'border border-gray-300' : ''}
-              px-3 py-2
-            `}
-            placeholder="Message ChatGPT..."
+          <InputField
             value={message}
             onChangeText={setMessage}
+            placeholder="Message ChatGPT..."
             multiline
-            onContentSizeChange={(e) => setHeight(e.nativeEvent.contentSize.height)}
+            className="text-base text-gray-800 pb-0 pt-0 max-h-30"
             editable={!loading}
             placeholderTextColor="#94A3B8"
+            error={message.trim() === '' ? 'Message cannot be empty' : ''}
           />
         </Animated.View>
 
