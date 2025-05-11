@@ -6,6 +6,8 @@ This repository provides a ready-to-use authentication system integrated with **
 ![Screenshot 1](.git_meta/screenshots/Screenshot1.png)
 ![Screenshot 2](.git_meta/screenshots/Screenshot2.png)
 ![Screenshot 3](.git_meta/screenshots/Screenshot3.png)
+![Screenshot 4](.git_meta/screenshots/Screenshot4.png)
+![Screenshot 5](.git_meta/screenshots/Screenshot5.png)
 
 ## ✨ Features
 
