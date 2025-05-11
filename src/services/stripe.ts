@@ -1,4 +1,5 @@
-import { supabase } from './supabase';
+import { supabase } from "../lib/supabase";
+
 
 export const createCheckoutSession = async (priceId: string) => {
   try {
