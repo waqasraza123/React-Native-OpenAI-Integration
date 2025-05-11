@@ -6,7 +6,7 @@ import {
     Alert,
     Text,
 } from 'react-native'
-import { router } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import Toast from 'react-native-toast-message'
 import { EmailLogin } from '../../components/auth/EmailLogin'
