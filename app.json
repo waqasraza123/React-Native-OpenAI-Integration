@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "magic-link-authentication",
-    "slug": "magic-link-authentication",
+    "name": "React Native OpenAI Integration Kit",
+    "slug": "react-native-openai-integration-kit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
