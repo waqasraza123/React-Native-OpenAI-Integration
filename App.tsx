@@ -4,10 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Send, CreditCard, User } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
-
-// Screens
-import ChatScreen from './src/screens/ChatScreen';
-import SubscriptionScreen from './src/screens/SubscriptionScreen';
+import ChatScreen from './src/screens/chat/ChatScreen';
+import SubscriptionScreen from './src/screens/subscription/SubscriptionScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();

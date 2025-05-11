@@ -28,6 +28,7 @@
     "expo-linking": "^7.1.5",
     "expo-status-bar": "~2.2.3",
     "install": "^0.13.0",
+    "lucide-react-native": "^0.509.0",
     "nativewind": "^4.1.23",
     "npm": "^11.3.0",
     "react": "19.0.0",
