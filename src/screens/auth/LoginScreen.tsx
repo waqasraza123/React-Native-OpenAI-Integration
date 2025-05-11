@@ -146,7 +146,12 @@ export default function LoginScreen() {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 className="flex-1 w-full justify-center items-center"
             >
-                <View className="w-full max-w-md bg-surface p-8 rounded-xl shadow-2xl">
+                <View
+                    className={`w-full ${Platform.OS === 'web'
+                        ? 'max-w-md bg-surface p-8 rounded-xl shadow-2xl'
+                        : 'px-0'
+                        }`}
+                >
                     <View className="items-center mb-8">
                         <Text className="text-3xl font-extrabold text-primary tracking-tight">MagicLink</Text>
                         <Text className="text-base text-gray-500 mt-1">Secure login with multiple options</Text>
