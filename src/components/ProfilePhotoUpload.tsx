@@ -8,11 +8,16 @@ import {
     Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Camera } from 'lucide-react-native';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 
-const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) => void }) => {
-    const [imageUri, setImageUri] = useState<string | null>(null);
+interface ProfilePhotoUploadProps {
+    onImagePicked: (uri: string) => void;
+    currentImage?: string;
+}
+
+const ProfilePhotoUpload = ({ onImagePicked, currentImage }: ProfilePhotoUploadProps) => {
+    const [imageUri, setImageUri] = useState<string | null>(currentImage || null);
     const { showActionSheetWithOptions } = useActionSheet();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -78,7 +83,7 @@ const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) =>
                     options,
                     cancelButtonIndex,
                 },
-                (selectedIndex: any) => {
+                (selectedIndex: number) => {
                     switch (selectedIndex) {
                         case 0:
                             openCamera();
@@ -93,16 +98,20 @@ const ProfilePhotoUpload = ({ onImagePicked }: { onImagePicked: (uri: string) =>
     };
 
     return (
-        <View className="items-center space-y-4">
+        <View className="items-center">
             <Pressable
                 onPress={handlePhotoAction}
-                className="w-32 h-32 rounded-full border-4 border-gray-200 shadow-md overflow-hidden"
+                className="w-32 h-32 rounded-full border-4 border-gray-200 shadow-md overflow-hidden bg-gray-100"
             >
                 {imageUri ? (
-                    <Image source={{ uri: imageUri }} className="w-full h-full" />
+                    <Image 
+                        source={{ uri: imageUri }} 
+                        className="w-full h-full"
+                        resizeMode="cover"
+                    />
                 ) : (
-                    <View className="flex-1 justify-center items-center bg-gray-100">
-                        <MaterialIcons name="camera-alt" size={40} color="#9ca3af" />
+                    <View className="flex-1 justify-center items-center">
+                        <Camera size={40} color="#9ca3af" />
                         <Text className="text-sm text-gray-400 mt-2">Tap to upload</Text>
                     </View>
                 )}
