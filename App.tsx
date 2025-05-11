@@ -7,7 +7,6 @@ import SignUpScreen from './src/screens/auth/SignUpScreen'
 import './src/styles/global.css';
 import Toast from 'react-native-toast-message'
 
-
 const Stack = createNativeStackNavigator<any>()
 
 export default function App() {
