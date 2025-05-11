@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, FlatList, KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { ChatBubble } from '../../../src/components/chat/ChatBubble';
 import { ChatInput } from '../../../src/components/chat/ChatInput';
 import { Message } from '../../../src/types/chat';
@@ -38,20 +38,22 @@ export default function ChatScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 bg-background"
-    >
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => <ChatBubble message={item} />}
-        contentContainerClassName="px-4 py-4"
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
-        onLayout={() => flatListRef.current?.scrollToEnd()}
-      />
-      <ChatInput onSend={handleSend} loading={loading} />
-    </KeyboardAvoidingView>
+    <SafeAreaView className="flex-1 bg-background">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+      >
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => <ChatBubble message={item} />}
+          contentContainerClassName="px-4 py-4"
+          onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
+          onLayout={() => flatListRef.current?.scrollToEnd()}
+        />
+        <ChatInput onSend={handleSend} loading={loading} />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
