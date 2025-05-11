@@ -2,6 +2,9 @@
 
 This repository provides a ready-to-use authentication system integrated with **Supabase** to speed up your development process when building applications with user authentication. It includes password-based authentication and social login (Google), allowing developers to quickly implement secure user management and authentication.
 
+## Screenshots
+![alt text](.git_meta/screenshots/Screenshot1.png) ![alt text](.git_meta/screenshots/Screenshot2.png) ![alt text](.git_meta/screenshots/Screenshot3.png)
+
 ## Features
 
 - **Password Authentication**: Allows users to sign up and log in using email and password.
