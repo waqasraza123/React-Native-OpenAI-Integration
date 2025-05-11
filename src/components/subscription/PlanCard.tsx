@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { Check } from 'lucide-react-native';
 import { SubscriptionPlan } from '../../types/subscription';
 
 interface PlanCardProps {
@@ -27,8 +26,8 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }
                     </Text>
                 </View>
                 {isSelected && (
-                    <View className="bg-primary rounded-full p-2">
-                        <Check size={20} color="white" />
+                    <View className="bg-primary rounded-full p-2 w-8 h-8 items-center justify-center">
+                        <Text className="text-white font-bold">✓</Text>
                     </View>
                 )}
             </View>
@@ -37,7 +36,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, isSelected, onSelect }
                 {plan.features.map((feature) => (
                     <View key={feature.id} className="flex-row items-start space-x-3">
                         <View className="w-5 h-5 rounded-full bg-primary/10 items-center justify-center mt-1">
-                            <Check size={12} color="#34C759" />
+                            <Text className="text-primary text-xs">✓</Text>
                         </View>
                         <View className="flex-1">
                             <Text className="text-gray-900 font-medium">{feature.name}</Text>
