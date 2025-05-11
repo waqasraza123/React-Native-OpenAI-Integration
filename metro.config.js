@@ -7,6 +7,6 @@ config.resolver.unstable_enablePackageExports = false;
 module.exports = withNativeWind(config, {
   input: './src/styles/global.css',
   unstable_css: {
-    darkMode: 'class'
+    darkMode: true
   }
 })
