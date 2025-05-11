@@ -14,10 +14,10 @@ export function ChatBubble({ message }: ChatBubbleProps) {
       className={`flex-row mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
       <View
-        className={`px-4 py-3 rounded-2xl max-w-[80%] ${
+        className={`px-5 py-3.5 rounded-2xl max-w-[80%] ${
           isUser
-            ? 'bg-primary rounded-tr-none'
-            : 'bg-surface rounded-tl-none'
+            ? 'bg-primary-500 rounded-tr-sm'
+            : 'bg-surface-secondary rounded-tl-sm'
         }`}
       >
         <Text

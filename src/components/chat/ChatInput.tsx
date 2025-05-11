@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Pressable, ActivityIndicator } from 'react-native';
-import { Send } from 'lucide-react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -18,30 +18,32 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
   };
 
   return (
-    <View className="p-4 border-t border-gray-200 bg-white">
+    <View className="p-4 border-t border-border bg-white">
       <View className="flex-row items-end space-x-2">
         <TextInput
-          className="flex-1 min-h-[40px] max-h-[120px] px-4 py-2 bg-surface rounded-2xl text-base text-gray-900"
+          className="flex-1 min-h-[44px] max-h-[120px] px-4 py-2.5 bg-surface-secondary rounded-2xl text-base text-gray-900"
           placeholder="Type a message..."
           value={message}
           onChangeText={setMessage}
           multiline
           onSubmitEditing={handleSend}
           editable={!loading}
+          placeholderTextColor="#94A3B8"
         />
         <Pressable
           onPress={handleSend}
           disabled={!message.trim() || loading}
-          className={`w-10 h-10 rounded-full items-center justify-center ${
-            message.trim() && !loading ? 'bg-primary' : 'bg-gray-200'
+          className={`w-11 h-11 rounded-full items-center justify-center ${
+            message.trim() && !loading ? 'bg-primary-500' : 'bg-gray-200'
           }`}
         >
           {loading ? (
             <ActivityIndicator color="#fff" size="small" />
           ) : (
-            <Send
+            <Ionicons
+              name="send"
               size={20}
-              color={message.trim() ? '#fff' : '#666'}
+              color={message.trim() ? '#fff' : '#94A3B8'}
             />
           )}
         </Pressable>
