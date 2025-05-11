@@ -16,6 +16,7 @@ import { PrimaryButton } from '../../components/buttons/PrimaryButton'
 import { DateField } from '../../components/fields/DateField'
 import ProfilePhotoUpload from '../../components/ProfilePhotoUpload'
 import Toast from 'react-native-toast-message'
+import clsx from 'clsx'
 
 export default function SignUpScreen() {
     const [name, setName] = useState('')
@@ -100,14 +101,20 @@ export default function SignUpScreen() {
 
     return (
         <ScrollView
-            className="flex-1 px-6 bg-white"
+            className="flex-1 bg-white"
             contentContainerStyle={{
                 flexGrow: 1,
                 justifyContent: 'center',
-                alignItems: 'center',
+                ...(Platform.OS === 'web' ? { alignItems: 'center' } : {}),
             }}
         >
-            <View className="w-full max-w-md rounded-2xl p-6 bg-gray-100 shadow-lg">
+            <View
+                className={clsx(
+                    'w-full px-4',
+                    Platform.OS === 'web' && 'max-w-md rounded-2xl p-6 bg-gray-100 shadow-lg',
+                    Platform.OS !== 'web' && 'pt-12'
+                )}
+            >
                 <Text className="text-3xl font-bold text-center mb-6 text-black">
                     Create an Account
                 </Text>
