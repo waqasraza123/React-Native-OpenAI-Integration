@@ -16,6 +16,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Subscription" component={require('./src/screens/subscription/SubscriptionScreen').default} />
         </Stack.Navigator>
         <Toast />
       </NavigationContainer>

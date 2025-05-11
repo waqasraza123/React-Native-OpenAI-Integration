@@ -6,10 +6,8 @@ import {
     Alert,
     Text,
 } from 'react-native'
-import { supabase } from '../../lib/supabase'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
-import { useRouter } from 'expo-router'
+import { supabase } from '../../lib/supabase'
 import Toast from 'react-native-toast-message'
 import '../../styles/global.css'
 import { EmailLogin } from '../../components/auth/EmailLogin'
@@ -18,11 +16,8 @@ import { SocialLogin } from '../../components/auth/SocialLogin'
 import { Divider } from '../../components/common/Divider'
 import { ErrorMessage } from '../../components/common/ErrorMessage'
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
-
 export default function LoginScreen() {
-    const navigation = useNavigation<LoginScreenNavigationProp>()
-    const router = useRouter()
+    const navigation = useNavigation()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [phone, setPhone] = useState('')
@@ -49,14 +44,14 @@ export default function LoginScreen() {
                     Alert.alert('Login Successful', 'You are now logged in.')
                 }
                 setInitialSession(session)
-                router.replace('/subscription')
+                navigation.navigate('Subscription')
             }
         })
 
         return () => {
             listener.subscription.unsubscribe()
         }
-    }, [initialSession, router])
+    }, [initialSession, navigation])
 
     const handleLogin = async () => {
         try {
@@ -76,7 +71,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in.')
                 setInitialSession(data.session)
-                router.replace('/subscription')
+                navigation.navigate('Subscription')
             }
         } catch (err) {
             console.error(err)
@@ -89,9 +84,7 @@ export default function LoginScreen() {
     const sendOtp = async () => {
         try {
             setLoading(true)
-            const { error } = await supabase.auth.signInWithOtp({
-                phone,
-            })
+            const { error } = await supabase.auth.signInWithOtp({ phone })
 
             if (error) {
                 setError(error.message)
@@ -125,7 +118,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in via phone.')
                 setInitialSession(data.session)
-                router.replace('/subscription')
+                navigation.navigate('Subscription')
             }
         } catch (err) {
             console.error(err)
