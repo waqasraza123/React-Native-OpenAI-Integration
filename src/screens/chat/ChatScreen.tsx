@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { View, FlatList, Text, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Message } from '../types/chat';
-import { ChatInput } from '../components/chat/ChatInput';
-import { ChatBubble } from '../components/chat/ChatBubble';
+import { Message } from '../../types/chat';
+import { ChatBubble } from '../../components/chat/ChatBubble';
+import { ChatInput } from '../../components/chat/ChatInput';
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -43,7 +43,7 @@ export default function ChatScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Chat Assistant</Text>
       </View>
-      
+
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -59,7 +59,7 @@ export default function ChatScreen() {
           </View>
         )}
       />
-      
+
       <ChatInput onSend={handleSend} loading={loading} />
     </SafeAreaView>
   );

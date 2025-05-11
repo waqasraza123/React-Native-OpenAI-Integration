@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Alert, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
 import { PrimaryButton } from '../../components/buttons/PrimaryButton';
-import { Settings, LogOut, Mail, Calendar, Phone } from 'lucide-react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import ProfilePhotoUpload from '../../components/ProfilePhotoUpload';
 import Toast from 'react-native-toast-message';
 import { StyleSheet } from 'react-native';
@@ -55,7 +55,7 @@ export default function ProfileScreen() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
+
       if (Platform.OS === 'web') {
         Toast.show({
           type: 'success',
@@ -119,20 +119,20 @@ export default function ProfileScreen() {
 
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
-            <Mail size={20} color="#6B7280" />
+            <Icon name="envelope" size={20} color="#6B7280" />
             <Text style={styles.infoText}>{profile?.email}</Text>
           </View>
-          
+
           {profile?.phone && (
             <View style={styles.infoRow}>
-              <Phone size={20} color="#6B7280" />
+              <Icon name="phone" size={20} color="#6B7280" />
               <Text style={styles.infoText}>{profile?.phone}</Text>
             </View>
           )}
-          
+
           {profile?.dob && (
             <View style={styles.infoRow}>
-              <Calendar size={20} color="#6B7280" />
+              <Icon name="calendar" size={20} color="#6B7280" />
               <Text style={styles.infoText}>
                 {new Date(profile.dob).toLocaleDateString()}
               </Text>
@@ -144,13 +144,13 @@ export default function ProfileScreen() {
           <PrimaryButton
             title="Account Settings"
             onPress={() => navigation.navigate('Settings')}
-            icon={<Settings size={20} color="white" />}
+            icon={<Icon name="cogs" size={20} color="white" />}
           />
-          
+
           <PrimaryButton
             title="Logout"
             onPress={handleLogout}
-            icon={<LogOut size={20} color="white" />}
+            icon={<Icon name="sign-out" size={20} color="white" />}
             className="bg-red-500"
           />
         </View>
