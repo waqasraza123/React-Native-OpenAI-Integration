@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { supabase } from '../../lib/supabase'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRouter } from '@react-navigation/native'
 import Toast from 'react-native-toast-message'
 import '../../styles/global.css'
 import { EmailLogin } from '../../components/auth/EmailLogin'
@@ -21,6 +21,7 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<any, 'Login'>
 
 export default function LoginScreen() {
     const navigation = useNavigation<LoginScreenNavigationProp>()
+    const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [phone, setPhone] = useState('')
@@ -47,13 +48,14 @@ export default function LoginScreen() {
                     Alert.alert('Login Successful', 'You are now logged in.')
                 }
                 setInitialSession(session)
+                router.replace('/subscription')
             }
         })
 
         return () => {
             listener.subscription.unsubscribe()
         }
-    }, [initialSession])
+    }, [initialSession, router])
 
     const handleLogin = async () => {
         try {
@@ -73,6 +75,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in.')
                 setInitialSession(data.session)
+                router.replace('/subscription')
             }
         } catch (err) {
             console.error(err)
@@ -121,6 +124,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in via phone.')
                 setInitialSession(data.session)
+                router.replace('/subscription')
             }
         } catch (err) {
             console.error(err)
