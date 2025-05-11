@@ -8,6 +8,7 @@ import ChatScreen from './src/screens/chat/ChatScreen';
 import LoginScreen from './src/screens/auth/LoginScreen';
 import SignUpScreen from './src/screens/auth/SignUpScreen';
 import './src/styles/global.css';
+import SubscriptionScreen from './src/screens/subscription/SubscriptionScreen';
 
 const Stack = createStackNavigator();
 
