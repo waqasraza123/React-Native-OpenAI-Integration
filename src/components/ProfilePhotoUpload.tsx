@@ -8,8 +8,8 @@ import {
     Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera } from 'lucide-react-native';
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface ProfilePhotoUploadProps {
     onImagePicked: (uri: string) => void;
@@ -83,13 +83,15 @@ const ProfilePhotoUpload = ({ onImagePicked, currentImage }: ProfilePhotoUploadP
                     options,
                     cancelButtonIndex,
                 },
-                (selectedIndex: number) => {
+                (selectedIndex?: number) => {
                     switch (selectedIndex) {
                         case 0:
                             openCamera();
                             break;
                         case 1:
                             openPicker();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -104,14 +106,14 @@ const ProfilePhotoUpload = ({ onImagePicked, currentImage }: ProfilePhotoUploadP
                 className="w-32 h-32 rounded-full border-4 border-gray-200 shadow-md overflow-hidden bg-gray-100"
             >
                 {imageUri ? (
-                    <Image 
-                        source={{ uri: imageUri }} 
+                    <Image
+                        source={{ uri: imageUri }}
                         className="w-full h-full"
                         resizeMode="cover"
                     />
                 ) : (
                     <View className="flex-1 justify-center items-center">
-                        <Camera size={40} color="#9ca3af" />
+                        <Ionicons name="camera-outline" size={40} color="#9ca3af" />
                         <Text className="text-sm text-gray-400 mt-2">Tap to upload</Text>
                     </View>
                 )}
