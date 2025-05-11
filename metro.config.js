@@ -4,4 +4,9 @@ const { withNativeWind } = require('nativewind/metro');
 const config = getDefaultConfig(__dirname, { resetCache: true });
 config.resolver.unstable_enablePackageExports = false;
 
-module.exports = withNativeWind(config, { input: './src/styles/global.css' })
+module.exports = withNativeWind(config, {
+  input: './src/styles/global.css',
+  unstable_css: {
+    darkMode: 'class'
+  }
+})
