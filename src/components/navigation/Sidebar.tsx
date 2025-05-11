@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, Platform, StyleSheet, Dimensions } from 'react-native';
-import { useNavigation, usePathname } from 'expo-router';
-import Animated, { 
-  useAnimatedStyle, 
-  withSpring, 
-  withTiming,
-  interpolate
-} from 'react-native-reanimated';
-import { MessageSquare, User, CreditCard, Settings, ChevronLeft, Menu } from 'lucide-react-native';
+import { useNavigation } from '@react-navigation/native';
+import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Icon from 'react-native-vector-icons/Feather';
 
 const SIDEBAR_WIDTH = 280;
 const COLLAPSED_WIDTH = 70;
@@ -15,7 +10,6 @@ const COLLAPSED_WIDTH = 70;
 export function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(Platform.OS === 'web');
   const navigation = useNavigation();
-  const pathname = usePathname();
 
   const sidebarStyle = useAnimatedStyle(() => {
     return {
@@ -27,49 +21,41 @@ export function Sidebar() {
   });
 
   const menuItems = [
-    { 
-      icon: MessageSquare, 
-      label: 'Chat', 
-      route: '/chat',
+    {
+      icon: 'message-square',
+      label: 'Chat',
+      route: 'ChatScreen',
       description: 'Start a conversation with AI'
     },
-    { 
-      icon: User, 
-      label: 'Profile', 
-      route: '/profile',
+    {
+      icon: 'user',
+      label: 'Profile',
+      route: 'ProfileScreen',
       description: 'Manage your account'
     },
-    { 
-      icon: CreditCard, 
-      label: 'Subscription', 
-      route: '/subscription',
+    {
+      icon: 'credit-card',
+      label: 'Subscription',
+      route: 'SubscriptionScreen',
       description: 'Manage your plan'
-    },
-    { 
-      icon: Settings, 
-      label: 'Settings', 
-      route: '/settings',
-      description: 'App preferences'
     },
   ];
 
-  const renderMenuItem = ({ icon: Icon, label, route, description }) => {
-    const isActive = pathname === route;
-    
+  const renderMenuItem = ({ icon, label, route, description }) => {
     return (
       <Pressable
         key={route}
         onPress={() => navigation.navigate(route)}
         style={({ pressed }) => [
           styles.menuItem,
-          isActive && styles.activeMenuItem,
           pressed && styles.pressedMenuItem,
         ]}
       >
-        <Icon 
-          size={24} 
-          color={isActive ? '#6366F1' : '#64748B'} 
-          style={styles.menuIcon} 
+        <Icon
+          name={icon}
+          size={24}
+          color="#64748B"
+          style={styles.menuIcon}
         />
         <Animated.View
           style={[
@@ -80,7 +66,7 @@ export function Sidebar() {
             },
           ]}
         >
-          <Text style={[styles.menuLabel, isActive && styles.activeMenuLabel]}>
+          <Text style={[styles.menuLabel, styles.activeMenuLabel]}>
             {label}
           </Text>
           <Text style={styles.menuDescription}>{description}</Text>
@@ -101,9 +87,9 @@ export function Sidebar() {
           style={styles.toggleButton}
         >
           {isExpanded ? (
-            <ChevronLeft size={24} color="#64748B" />
+            <Icon name="chevron-left" size={24} color="#64748B" />
           ) : (
-            <Menu size={24} color="#64748B" />
+            <Icon name="menu" size={24} color="#64748B" />
           )}
         </Pressable>
       </View>
@@ -149,9 +135,6 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     borderRadius: 12,
     backgroundColor: 'transparent',
-  },
-  activeMenuItem: {
-    backgroundColor: '#EEF2FF',
   },
   pressedMenuItem: {
     opacity: 0.7,

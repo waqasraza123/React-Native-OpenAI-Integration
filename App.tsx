@@ -26,15 +26,23 @@ const App = () => {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen
             name="ChatScreen"
-            component={(props) => (
+            component={(props: any) => (
               <MainLayout>
                 <ChatScreen {...props} />
               </MainLayout>
             )}
           />
           <Stack.Screen
+            name="SubscriptionScreen"
+            component={(props: any) => (
+              <MainLayout>
+                <SubscriptionScreen {...props} />
+              </MainLayout>
+            )}
+          />
+          <Stack.Screen
             name="ProfileScreen"
-            component={(props) => (
+            component={(props: any) => (
               <MainLayout>
                 <ProfileScreen {...props} />
               </MainLayout>
