@@ -19,14 +19,7 @@ import Animated, {
   Layout,
 } from 'react-native-reanimated';
 import { Image } from 'expo-image';
-import {
-  Bot,
-  Sparkles,
-  RefreshCw,
-  Copy,
-  Check,
-  Menu,
-} from 'lucide-react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const HEADER_HEIGHT = 60;
 const ASSISTANT_AVATAR = 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
@@ -82,20 +75,20 @@ export default function ChatScreen() {
   }, []);
 
   const renderHeader = () => (
-    <Animated.View 
+    <Animated.View
       entering={FadeIn}
       style={[styles.header, Platform.OS === 'web' && styles.headerShadow]}
     >
       <View style={styles.headerContent}>
-        <Menu size={24} color="#374151" />
+        <Icon name="bars" size={24} color="#374151" />
         <Text style={styles.title}>Chat Assistant</Text>
-        <Sparkles size={24} color="#6366F1" />
+        <Icon name="sparkles" size={24} color="#6366F1" />
       </View>
     </Animated.View>
   );
 
   const renderEmptyState = () => (
-    <Animated.View 
+    <Animated.View
       entering={FadeIn}
       style={[styles.emptyContainer, { height: windowHeight - HEADER_HEIGHT - 100 }]}
     >
@@ -116,9 +109,9 @@ export default function ChatScreen() {
         style={styles.actionButton}
       >
         {copied === messageId ? (
-          <Check size={16} color="#22C55E" />
+          <Icon name="check" size={16} color="#22C55E" />
         ) : (
-          <Copy size={16} color="#6B7280" />
+          <Icon name="copy" size={16} color="#6B7280" />
         )}
       </Pressable>
     </View>
@@ -137,7 +130,7 @@ export default function ChatScreen() {
             entering={FadeIn}
             layout={Layout.springify()}
           >
-            <ChatBubble 
+            <ChatBubble
               message={item}
               renderActions={() => renderMessageActions(item.id)}
             />
@@ -154,7 +147,7 @@ export default function ChatScreen() {
           onPress={handleRefresh}
           style={styles.refreshButton}
         >
-          <RefreshCw size={16} color="#6366F1" />
+          <Icon name="sync-alt" size={16} color="#6366F1" />
           <Text style={styles.refreshText}>Clear Chat</Text>
         </Pressable>
       )}

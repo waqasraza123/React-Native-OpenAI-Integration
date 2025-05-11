@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import { Send, Sparkles } from 'lucide-react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -41,9 +41,9 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
     <View style={styles.container}>
       <View style={styles.inputRow}>
         <Pressable style={styles.suggestionButton}>
-          <Sparkles size={20} color="#6366F1" />
+          <Icon name="zap" size={20} color="#6366F1" />
         </Pressable>
-        
+
         <Animated.View style={[styles.inputContainer, animatedHeight]}>
           <TextInput
             style={styles.input}
@@ -51,7 +51,7 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
             value={message}
             onChangeText={setMessage}
             multiline
-            onContentSizeChange={(e) => 
+            onContentSizeChange={(e) =>
               setHeight(e.nativeEvent.contentSize.height)
             }
             editable={!loading}
@@ -70,7 +70,7 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
           {loading ? (
             <ActivityIndicator color="#FFFFFF" size="small" />
           ) : (
-            <Send size={20} color="#FFFFFF" />
+            <Icon name="send" size={20} color="#FFFFFF" />
           )}
         </Pressable>
       </View>
