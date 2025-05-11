@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaView, StatusBar, StyleSheet, Platform } from 'react-native';
 import ProfileScreen from './src/screens/profile/ProfileScreen';
 import ChatScreen from './src/screens/chat/ChatScreen';
+import './src/styles/global.css';
 
 const Stack = createStackNavigator();
 

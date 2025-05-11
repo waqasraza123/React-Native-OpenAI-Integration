@@ -4,7 +4,6 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
-  StyleSheet,
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -38,22 +37,28 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
   }));
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputRow}>
-        <Pressable style={styles.suggestionButton}>
+    <View className="p-4 bg-white">
+      <View className="flex flex-row items-end gap-3">
+        <Pressable className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
           <Icon name="zap" size={20} color="#6366F1" />
         </Pressable>
 
-        <Animated.View style={[styles.inputContainer, animatedHeight]}>
+        <Animated.View
+          className="flex-1 bg-gray-100 rounded-xl px-4 py-2 justify-center"
+          style={animatedHeight}
+        >
           <TextInput
-            style={styles.input}
+            className={`
+              text-base text-gray-800 pb-0 pt-0 max-h-30
+              rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600
+              ${Platform.OS === 'web' ? 'border border-gray-300' : ''}
+              px-3 py-2
+            `}
             placeholder="Message ChatGPT..."
             value={message}
             onChangeText={setMessage}
             multiline
-            onContentSizeChange={(e) =>
-              setHeight(e.nativeEvent.contentSize.height)
-            }
+            onContentSizeChange={(e) => setHeight(e.nativeEvent.contentSize.height)}
             editable={!loading}
             placeholderTextColor="#94A3B8"
           />
@@ -62,10 +67,8 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
         <Pressable
           onPress={handleSend}
           disabled={!message.trim() || loading}
-          style={[
-            styles.sendButton,
-            (!message.trim() || loading) && styles.sendButtonDisabled
-          ]}
+          className={`w-10 h-10 rounded-full flex items-center justify-center ${!message.trim() || loading ? 'bg-gray-300' : 'bg-indigo-600'
+            }`}
         >
           {loading ? (
             <ActivityIndicator color="#FFFFFF" size="small" />
@@ -77,49 +80,3 @@ export function ChatInput({ onSend, loading }: ChatInputProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 12,
-  },
-  suggestionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputContainer: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    justifyContent: 'center',
-  },
-  input: {
-    fontSize: 16,
-    color: '#1F2937',
-    paddingTop: 0,
-    paddingBottom: 0,
-    maxHeight: 120,
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#6366F1',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sendButtonDisabled: {
-    backgroundColor: '#E5E7EB',
-  },
-});

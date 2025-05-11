@@ -3,7 +3,6 @@ import {
   View,
   FlatList,
   Text,
-  StyleSheet,
   Platform,
   Pressable,
   ActivityIndicator,
@@ -77,11 +76,12 @@ export default function ChatScreen() {
   const renderHeader = () => (
     <Animated.View
       entering={FadeIn}
-      style={[styles.header, Platform.OS === 'web' && styles.headerShadow]}
+      className={`h-[${HEADER_HEIGHT}px] bg-white border-b border-gray-200 justify-center ${Platform.OS === 'web' ? 'shadow-lg' : ''
+        }`}
     >
-      <View style={styles.headerContent}>
+      <View className="flex flex-row items-center justify-between px-4">
         <Icon name="bars" size={24} color="#374151" />
-        <Text style={styles.title}>Chat Assistant</Text>
+        <Text className="text-lg font-semibold text-gray-900">Chat Assistant</Text>
         <Icon name="sparkles" size={24} color="#6366F1" />
       </View>
     </Animated.View>
@@ -90,23 +90,24 @@ export default function ChatScreen() {
   const renderEmptyState = () => (
     <Animated.View
       entering={FadeIn}
-      style={[styles.emptyContainer, { height: windowHeight - HEADER_HEIGHT - 100 }]}
+      className="flex justify-center items-center px-6"
+      style={{ height: windowHeight - HEADER_HEIGHT - 100 }}
     >
       <Image
         source={ASSISTANT_AVATAR}
-        style={styles.assistantImage}
+        className="w-30 h-30 rounded-full mb-6"
         contentFit="cover"
       />
-      <Text style={styles.emptyTitle}>How can I help you today?</Text>
-      <Text style={styles.emptySubtext}>Ask me anything - I'm here to assist!</Text>
+      <Text className="text-2xl font-semibold text-gray-900 mb-2 text-center">How can I help you today?</Text>
+      <Text className="text-lg text-gray-500 text-center">Ask me anything - I'm here to assist!</Text>
     </Animated.View>
   );
 
   const renderMessageActions = useCallback((messageId: string) => (
-    <View style={styles.messageActions}>
+    <View className="flex flex-row items-center justify-end pt-1 gap-2">
       <Pressable
         onPress={() => handleCopy(messageId)}
-        style={styles.actionButton}
+        className="p-2 rounded-lg bg-gray-100"
       >
         {copied === messageId ? (
           <Icon name="check" size={16} color="#22C55E" />
@@ -118,7 +119,7 @@ export default function ChatScreen() {
   ), [copied, handleCopy]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-white">
       {renderHeader()}
 
       <FlatList
@@ -129,6 +130,7 @@ export default function ChatScreen() {
           <Animated.View
             entering={FadeIn}
             layout={Layout.springify()}
+            className="mb-3"
           >
             <ChatBubble
               message={item}
@@ -136,7 +138,6 @@ export default function ChatScreen() {
             />
           </Animated.View>
         )}
-        contentContainerStyle={styles.chatContainer}
         onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
         onLayout={() => flatListRef.current?.scrollToEnd()}
         ListEmptyComponent={renderEmptyState}
@@ -145,112 +146,20 @@ export default function ChatScreen() {
       {messages.length > 0 && (
         <Pressable
           onPress={handleRefresh}
-          style={styles.refreshButton}
+          className="absolute bottom-24 self-center flex flex-row items-center bg-gray-100 px-6 py-2 rounded-full gap-2"
         >
           <Icon name="sync-alt" size={16} color="#6366F1" />
-          <Text style={styles.refreshText}>Clear Chat</Text>
+          <Text className="text-sm font-medium text-indigo-600">Clear Chat</Text>
         </Pressable>
       )}
 
       <Animated.View
         entering={FadeIn}
         exiting={FadeOut}
-        style={styles.inputContainer}
+        className="border-t border-gray-200 bg-white"
       >
         <ChatInput onSend={handleSend} loading={loading} />
       </Animated.View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  header: {
-    height: HEADER_HEIGHT,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    justifyContent: 'center',
-  },
-  headerShadow: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  chatContainer: {
-    padding: 16,
-    flexGrow: 1,
-  },
-  emptyContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  assistantImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 24,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  emptySubtext: {
-    fontSize: 16,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  messageActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingTop: 4,
-    gap: 8,
-  },
-  actionButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#F3F4F6',
-  },
-  refreshButton: {
-    position: 'absolute',
-    bottom: 90,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 6,
-  },
-  refreshText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#6366F1',
-  },
-  inputContainer: {
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-    backgroundColor: '#FFFFFF',
-  },
-});
