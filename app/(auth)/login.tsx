@@ -9,7 +9,6 @@ import {
 import { useRouter } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import Toast from 'react-native-toast-message'
-import '../../styles/global.css'
 import { EmailLogin } from '../../components/auth/EmailLogin'
 import { PhoneLogin } from '../../components/auth/PhoneLogin'
 import { SocialLogin } from '../../components/auth/SocialLogin'
@@ -44,7 +43,7 @@ export default function LoginScreen() {
                     Alert.alert('Login Successful', 'You are now logged in.')
                 }
                 setInitialSession(session)
-                router.replace('/subscription')
+                router.replace('/(tabs)/subscription')
             }
         })
 
@@ -71,7 +70,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in.')
                 setInitialSession(data.session)
-                router.replace('/subscription')
+                router.replace('/(tabs)/subscription')
             }
         } catch (err) {
             console.error(err)
@@ -118,7 +117,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in via phone.')
                 setInitialSession(data.session)
-                router.replace('/subscription')
+                router.replace('/(tabs)/subscription')
             }
         } catch (err) {
             console.error(err)
