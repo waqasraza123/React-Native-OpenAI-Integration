@@ -24,6 +24,7 @@ export default function LoginScreen() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [initialSession, setInitialSession] = useState<any>(undefined)
+    const router = useRouter()
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => {
