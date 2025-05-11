@@ -9,6 +9,7 @@ import LoginScreen from './src/screens/auth/LoginScreen';
 import SignUpScreen from './src/screens/auth/SignUpScreen';
 import './src/styles/global.css';
 import SubscriptionScreen from './src/screens/subscription/SubscriptionScreen';
+import StartupScreen from './src/StartupScreen';
 
 const Stack = createStackNavigator();
 
@@ -18,13 +19,14 @@ const App = () => {
       <StatusBar barStyle="dark-content" />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="ChatScreen"
+          initialRouteName="StartupScreen"
           screenOptions={{
             headerShown: false,
           }}
         >
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="StartupScreen" component={StartupScreen} />
           <Stack.Screen
             name="ChatScreen"
             component={(props: any) => (

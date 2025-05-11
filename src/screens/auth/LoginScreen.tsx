@@ -71,7 +71,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in.')
                 setInitialSession(data.session)
-                navigation.navigate('Subscription')
+                navigation.navigate('ChatScreen')
             }
         } catch (err) {
             console.error(err)
@@ -118,7 +118,7 @@ export default function LoginScreen() {
             if (data.session) {
                 Alert.alert('Login Successful', 'You are now logged in via phone.')
                 setInitialSession(data.session)
-                navigation.navigate('Subscription')
+                navigation.navigate('SubscriptionScreen')
             }
         } catch (err) {
             console.error(err)
