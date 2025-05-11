@@ -1,20 +1,24 @@
 # Supabase Authentication Starter
 
-This repository provides a ready-to-use authentication system integrated with **Supabase** to speed up your development process when building applications with user authentication. It includes password-based authentication and social login (Google), allowing developers to quickly implement secure user management and authentication.
+This repository provides a ready-to-use authentication system integrated with **Supabase** to speed up your development process when building applications with user authentication. It includes password-based authentication, phone-based OTP, and social login (Google, GitHub, and Figma), allowing developers to quickly implement secure user management.
 
-## Screenshots
-![alt text](.git_meta/screenshots/Screenshot1.png) ![alt text](.git_meta/screenshots/Screenshot2.png) ![alt text](.git_meta/screenshots/Screenshot3.png)
+## 📸 Screenshots
+![Screenshot 1](.git_meta/screenshots/Screenshot1.png)
+![Screenshot 2](.git_meta/screenshots/Screenshot2.png)
+![Screenshot 3](.git_meta/screenshots/Screenshot3.png)
 
-## Features
+## ✨ Features
 
-- **Password Authentication**: Allows users to sign up and log in using email and password.
-- **Google OAuth Login**: Provides users the ability to authenticate via Google.
-- **Email Verification**: Sends confirmation emails to verify user accounts.
-- **Error Handling**: Handles various common errors during authentication.
-- **Responsive UI Components**: Utilizes Tailwind CSS for responsive, clean UI components.
-- **Supabase Integration**: Integrates Supabase's authentication APIs and storage services.
+- **Email & Password Authentication** – Secure registration and login using traditional credentials.
+- **Phone Authentication with OTP** – Users can log in using their phone numbers via Supabase OTP flow.
+- **Google, GitHub & Figma OAuth Login** – One-click login using third-party identity providers.
+- **Email Verification** – Automatic verification emails for new sign-ups.
+- **Session Management** – Real-time session detection and token handling.
+- **Error Feedback** – Friendly error messages and alerts.
+- **Responsive UI** – Built using Tailwind CSS via NativeWind for clean and consistent mobile styling.
+- **Platform Support** – Works seamlessly across iOS, Android, and Web (with Expo).
 
-## Table of Contents
+## 📚 Table of Contents
 
 1. [Prerequisites](#prerequisites)
 2. [Installation](#installation)
@@ -26,57 +30,89 @@ This repository provides a ready-to-use authentication system integrated with **
 
 ---
 
-## Prerequisites
+## ✅ Prerequisites
 
-To get started with this repository, you’ll need the following:
+To use this project, ensure you have:
 
 - **Node.js** (>= 14.x)
-- **Expo CLI** (for React Native projects)
-- **Supabase account**: Sign up [here](https://supabase.com).
-- **Tailwind CSS / NativeWind** (for styling)
-- **Google Cloud project** (for OAuth integration)
+- **Expo CLI** – `npm install -g expo-cli`
+- **Supabase account** – [Create here](https://supabase.com)
+- **Google Developer account** (for OAuth setup)
+- **React Native development environment** (iOS/Android simulator or real device)
 
-## Installation
+---
 
-1. Clone this repository:
+## 🛠 Installation
+
+1. **Clone the repository**
     ```bash
     git clone https://github.com/your-username/supabase-authentication-starter.git
     cd supabase-authentication-starter
     ```
 
-2. Install the dependencies:
+2. **Install dependencies**
     ```bash
     npm install
     ```
 
-3. Set up Supabase:
-    - Go to [Supabase](https://supabase.com), create a project, and obtain your Supabase URL and API Key.
-    - In your project, create a `.env` file and add the following environment variables:
-      ```env
-      SUPABASE_URL=your-supabase-url
-      SUPABASE_API_KEY=your-supabase-api-key
+3. **Set up environment variables**
+    Create a `.env` file in the root directory and add:
+    ```env
+    SUPABASE_URL=https://your-project.supabase.co
+    SUPABASE_ANON_KEY=your-anon-key
+    ```
+
+4. **Configure Supabase**
+    - Go to [Supabase](https://app.supabase.com), create a new project.
+    - Enable **Email/Password**, **Phone**, and **OAuth** (Google, GitHub, Figma) under `Authentication > Providers`.
+
+5. **Configure OAuth (e.g. Google)**
+    - Go to [Google Developer Console](https://console.developers.google.com/)
+    - Create credentials for a Web or iOS/Android app
+    - Add Supabase’s OAuth redirect URL:  
+      ```
+      https://your-project.supabase.co/auth/v1/callback
       ```
 
-4. Set up Google OAuth:
-    - Go to the [Google Developer Console](https://console.developers.google.com/), create a new project, and enable the "Google Identity" API.
-    - Set up OAuth credentials and configure your redirect URIs.
-
-5. Run your project:
+6. **Start the development server**
     ```bash
     expo start
     ```
 
 ---
 
-## Usage
+## 🚀 Usage
 
-After installation, you can start using the components for authentication in your project.
+You can use the components included to allow users to:
 
-### Sign Up Flow
-The sign-up form allows users to register with email and password. After registering, users are prompted to verify their email through the confirmation email sent by Supabase.
+### 🔐 Sign Up with Email
 
-```tsx
-import { supabase } from '../../lib/supabase';
+```
+import { supabase } from './lib/supabase';
 
-// Create a new user
-const { error } = await supabase.auth.signUp({ email, password });
+const { error } = await supabase.auth.signUp({
+  email: 'user@example.com',
+  password: 'securePassword',
+});
+```
+
+### Sign In with Email & Password
+```
+const { data, error } = await supabase.auth.signInWithPassword({
+  email: 'user@example.com',
+  password: 'securePassword',
+});
+```
+
+### Sign In with Phone (OTP)
+```
+const { error } = await supabase.auth.signInWithOtp({
+  phone: '+1234567890',
+});
+```
+
+### Sign In with Google or GitHub
+```
+await supabase.auth.signInWithOAuth({ provider: 'google' });
+await supabase.auth.signInWithOAuth({ provider: 'github' });
+```
