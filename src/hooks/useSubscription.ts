@@ -9,7 +9,7 @@ export const useSubscription = () => {
   const handleSubscribe = useCallback(async (priceId: string) => {
     try {
       setLoading(true);
-      const { sessionUrl } = await createCheckoutSession(priceId);
+      const sessionUrl = await createCheckoutSession(priceId);
 
       if (Platform.OS === 'web') {
         window.location.href = sessionUrl;

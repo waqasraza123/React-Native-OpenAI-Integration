@@ -1,27 +1,27 @@
 import { supabase } from "../lib/supabase";
 
-
 export const createCheckoutSession = async (priceId: string) => {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    if (!user) {
+    if (sessionError || userError || !session || !user) {
       throw new Error('Please login to subscribe');
     }
 
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        priceId,
-        userId: user.id,
-      }),
-    });
+    const token = session.access_token;
+    const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
 
-    return await response.json();
+    const { data, error } = await supabase.functions.invoke('create-stripe-checkout-session-url', {
+      body: { name: 'Functions', priceId: "price_1PruFOERPGugMFaujyJ4f51Z", quantity: 1 },
+    })
+
+    if (!data && !data.url) {
+      throw new Error('Failed to create Stripe session');
+    }
+
+    return data.url;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.message || 'Unexpected error occurred');
   }
 };
